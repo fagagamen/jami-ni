@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam'i N'i — Salsa Macha Artesanal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro: #0a0a0a;
+  --carbon: #111111;
+  --grafito: #1a1a1a;
+  --borde: #2a2a2a;
+  --oro: #c9a84c;
+  --oro-claro: #e8c97a;
+  --rojo: #8B1A1A;
+  --rojo-vivo: #c0392b;
+  --crema: #f5f0e8;
+  --gris: #888;
+  --gris-claro: #bbb;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--negro); color: var(--crema); font-family: var(--font-body); font-size: 18px; line-height: 1.7; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  background: rgba(10,10,10,0.96);
+  border-bottom: 1px solid var(--borde);
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 22px; letter-spacing: 0.15em;
+  color: var(--oro); text-decoration: none;
+  font-style: italic;
+}
+.nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+.nav-links a { color: var(--gris-claro); text-decoration: none; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.3s; }
+.nav-links a:hover { color: var(--oro); }
+.nav-cta { background: var(--oro) !important; color: var(--negro) !important; padding: 8px 20px !important; font-weight: 500 !important; transition: background 0.3s !important; }
+.nav-cta:hover { background: var(--oro-claro) !important; color: var(--negro) !important; }
+.carrito-nav { position: relative; cursor: pointer; color: var(--gris-claro); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.3s; }
+.carrito-nav:hover { color: var(--oro); }
+.carrito-count { position: absolute; top: -8px; right: -12px; background: var(--rojo-vivo); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-body); display: none; }
+.carrito-count.visible { display: flex; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center; padding: 120px 48px 80px;
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 70%, rgba(139,26,26,0.12) 0%, transparent 60%), var(--negro);
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px);
+  pointer-events: none;
+}
+.hero-tag { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 24px; display: block; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(56px, 10vw, 120px); font-weight: 400; line-height: 0.95; letter-spacing: -0.01em; margin-bottom: 20px; opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards; }
+.hero h1 em { font-style: italic; color: var(--oro); display: block; }
+.hero-sub { font-size: 20px; font-weight: 300; color: var(--gris-claro); max-width: 480px; margin: 0 auto 48px; opacity: 0; animation: fadeUp 0.9s ease 0.6s forwards; }
+.hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.9s ease 0.8s forwards; }
+.btn-primary { padding: 16px 44px; background: var(--oro); color: var(--negro); font-family: var(--font-body); font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.3s, transform 0.2s; text-decoration: none; display: inline-block; }
+.btn-primary:hover { background: var(--oro-claro); transform: translateY(-2px); }
+.btn-outline { padding: 16px 44px; background: transparent; color: var(--crema); font-family: var(--font-body); font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--borde); cursor: pointer; transition: border-color 0.3s, color 0.3s, transform 0.2s; text-decoration: none; display: inline-block; }
+.btn-outline:hover { border-color: var(--oro); color: var(--oro); transform: translateY(-2px); }
+.scroll-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s ease 1.2s forwards; }
+.scroll-hint span { font-size: 10px; letter-spacing: 0.3em; color: var(--gris); text-transform: uppercase; }
+.scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: linear-gradient(to bottom, var(--oro), transparent); }
+
+/* SECCIÓN SOBRE */
+.sobre { padding: 100px 48px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.sobre-text h2 { font-family: var(--font-display); font-size: clamp(32px, 4vw, 48px); font-weight: 400; line-height: 1.15; margin-bottom: 20px; }
+.sobre-text h2 em { font-style: italic; color: var(--oro); }
+.sobre-text p { color: var(--gris-claro); font-weight: 300; margin-bottom: 16px; }
+.sobre-visual { position: relative; height: 380px; background: var(--grafito); border: 1px solid var(--borde); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.sobre-visual::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(139,26,26,0.15), transparent 70%); }
+.sobre-icon { font-size: 100px; opacity: 0.12; position: relative; z-index: 1; }
+.sobre-badge { position: absolute; bottom: -1px; left: -1px; background: var(--rojo-vivo); color: white; padding: 10px 20px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-family: var(--font-body); }
+
+/* DIVIDER */
+.divider { display: flex; align-items: center; gap: 20px; padding: 0 48px; max-width: 1100px; margin: 0 auto; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--borde); }
+.divider span { color: var(--rojo-vivo); font-size: 18px; }
+
+/* SALSAS */
+.salsas-section { padding: 80px 48px 100px; background: var(--carbon); }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-tag { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 14px; display: block; }
+.section-header h2 { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); font-weight: 400; }
+.salsas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px; max-width: 1100px; margin: 0 auto 48px; }
+.salsa-card { background: var(--grafito); padding: 36px 28px; border: 1px solid var(--borde); transition: border-color 0.3s, transform 0.3s; position: relative; overflow: hidden; cursor: pointer; }
+.salsa-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, rgba(139,26,26,0.07), transparent 60%); opacity: 0; transition: opacity 0.3s; }
+.salsa-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-4px); }
+.salsa-card:hover::before { opacity: 1; }
+.salsa-nombre { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 8px; line-height: 1.2; }
+.salsa-desc { font-size: 15px; color: var(--gris-claro); font-weight: 300; margin-bottom: 20px; line-height: 1.6; }
+.calaveras { display: flex; gap: 4px; margin-bottom: 20px; align-items: center; }
+.calavera { font-size: 16px; filter: grayscale(1) brightness(0.4); transition: filter 0.2s; }
+.calavera.on { filter: none; }
+.calaveras-label { font-size: 11px; color: var(--gris); letter-spacing: 0.1em; text-transform: uppercase; margin-left: 8px; }
+.salsa-footer { display: flex; justify-content: space-between; align-items: center; }
+.salsa-precio { font-family: var(--font-display); font-size: 28px; color: var(--oro); }
+.salsa-precio small { font-size: 13px; color: var(--gris); font-family: var(--font-body); }
+.agregar-btn { padding: 10px 22px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.agregar-btn:hover, .agregar-btn.agregado { background: var(--oro); border-color: var(--oro); color: var(--negro); }
+
+.personaliza-banner { max-width: 1100px; margin: 0 auto; background: var(--grafito); border: 1px solid var(--borde); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.personaliza-banner h3 { font-family: var(--font-display); font-size: 28px; font-weight: 400; }
+.personaliza-banner h3 em { font-style: italic; color: var(--rojo-vivo); }
+.personaliza-banner p { font-size: 16px; color: var(--gris-claro); font-weight: 300; margin-top: 6px; }
+
+/* PROCESO */
+.proceso { padding: 100px 48px; max-width: 1100px; margin: 0 auto; }
+.proceso-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 56px; }
+.proceso-item { text-align: center; }
+.proceso-num { font-family: var(--font-display); font-size: 56px; color: var(--borde); margin-bottom: 16px; line-height: 1; }
+.proceso-item h3 { font-family: var(--font-display); font-size: 20px; font-weight: 400; margin-bottom: 10px; }
+.proceso-item p { font-size: 15px; color: var(--gris); font-weight: 300; line-height: 1.7; }
+
+/* ENVÍOS */
+.envios { padding: 80px 48px; background: var(--carbon); }
+.envios-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.envio-card { border: 1px solid var(--borde); background: var(--grafito); padding: 32px 24px; text-align: center; }
+.envio-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+.envio-card h3 { font-family: var(--font-display); font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+.envio-card p { font-size: 14px; color: var(--gris); font-weight: 300; line-height: 1.6; }
+
+/* CTA FINAL */
+.cta-section { padding: 100px 48px; text-align: center; background: radial-gradient(ellipse at center, rgba(139,26,26,0.1), transparent 60%), var(--negro); }
+.cta-section h2 { font-family: var(--font-display); font-size: clamp(32px, 5vw, 64px); font-weight: 400; margin-bottom: 16px; }
+.cta-section h2 em { font-style: italic; color: var(--rojo-vivo); }
+.cta-section p { font-size: 18px; color: var(--gris-claro); margin-bottom: 40px; font-weight: 300; }
+.whatsapp-btn { display: inline-flex; align-items: center; gap: 10px; padding: 18px 48px; background: #25D366; color: white; font-family: var(--font-body); font-size: 15px; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: opacity 0.3s, transform 0.2s; }
+.whatsapp-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.footer-logo { font-family: var(--font-display); font-size: 20px; color: var(--oro); font-style: italic; }
+.footer-info { font-size: 13px; color: var(--gris); }
+.footer-links { display: flex; gap: 24px; list-style: none; }
+.footer-links a { color: var(--gris); text-decoration: none; font-size: 13px; transition: color 0.3s; }
+.footer-links a:hover { color: var(--oro); }
+
+/* CARRITO FLOTANTE */
+.carrito-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--oro); color: var(--negro); padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+.carrito-bar.visible { transform: translateY(0); }
+.carrito-info { font-family: var(--font-display); font-size: 18px; }
+.carrito-info small { font-family: var(--font-body); font-size: 13px; font-weight: 300; margin-left: 8px; }
+.carrito-acciones { display: flex; gap: 12px; align-items: center; }
+.carrito-vaciar { background: none; border: 1px solid rgba(0,0,0,0.2); color: var(--negro); padding: 8px 16px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+.carrito-vaciar:hover { background: rgba(0,0,0,0.1); }
+.carrito-pedir { background: var(--negro); color: var(--oro); border: none; padding: 12px 32px; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; text-decoration: none; display: inline-block; }
+.carrito-pedir:hover { background: var(--grafito); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.88); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--grafito); border: 1px solid var(--borde); padding: 48px; max-width: 520px; width: 100%; text-align: center; transform: translateY(20px); transition: transform 0.3s; }
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal h3 { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--oro); margin-bottom: 10px; }
+.modal p { color: var(--gris-claro); margin-bottom: 28px; font-size: 16px; }
+.modal-close { padding: 12px 36px; background: var(--oro); border: none; color: var(--negro); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ANIMACIONES */
+@keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links { gap: 16px; }
+  .hero { padding: 100px 24px 60px; }
+  .sobre { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
+  .sobre-visual { height: 250px; }
+  .salsas-section { padding: 60px 24px 80px; }
+  .proceso { padding: 60px 24px; }
+  .proceso-grid { grid-template-columns: 1fr; gap: 32px; }
+  .envios { padding: 60px 24px; }
+  .envios-inner { grid-template-columns: 1fr; }
+  .cta-section { padding: 60px 24px; }
+  footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+  .carrito-bar { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
+  .personaliza-banner { padding: 28px 20px; }
+  .divider { padding: 0 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">Jam'i N'i</a>
+  <ul class="nav-links">
+    <li><a href="#salsas">Salsas</a></li>
+    <li><a href="#envios">Envíos</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><span class="carrito-nav" onclick="verCarrito()">🛒 Carrito <span class="carrito-count" id="nav-count">0</span></span></li>
+    <li><a href="salsa-macha.html" class="nav-cta">Personaliza tu salsa</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-tag">Salsa Macha Artesanal · CDMX</span>
+  <h1>Jam'i N'i<em>Sabor que despierta</em></h1>
+  <p class="hero-sub">Salsa macha artesanal elaborada con chiles seleccionados, ingredientes premium y mucho amor desde Ciudad de México.</p>
+  <div class="hero-cta">
+    <a href="#salsas" class="btn-primary">Ver salsas</a>
+    <a href="salsa-macha.html" class="btn-outline">Crea la tuya</a>
+  </div>
+  <div class="scroll-hint"><span>Scroll</span></div>
+</section>
+
+<!-- SOBRE -->
+<section>
+  <div class="sobre reveal">
+    <div class="sobre-text">
+      <h2>Artesanal desde el<br><em>primer chile</em></h2>
+      <p>En Jam'i N'i cada frasco es elaborado a mano con ingredientes cuidadosamente seleccionados. No usamos conservadores artificiales — solo tradición, técnica y los mejores chiles de México.</p>
+      <p>Enviamos a toda la República Mexicana para que el sabor llegue a donde estés.</p>
+    </div>
+    <div class="sobre-visual">
+      <div class="sobre-icon">🌶️</div>
+      <div class="sobre-badge">100% artesanal</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><span>✦</span></div>
+
+<!-- SALSAS DE LÍNEA -->
+<section class="salsas-section" id="salsas">
+  <div class="section-header reveal">
+    <span class="section-tag">Salsas de línea</span>
+    <h2>Ediciones permanentes</h2>
+  </div>
+  <div class="salsas-grid" id="salsas-grid"></div>
+
+  <!-- BANNER PERSONALIZADA -->
+  <div class="personaliza-banner reveal">
+    <div>
+      <h3>Crea tu propia<br><em>Salsa Macha</em></h3>
+      <p>Elige tus chiles, ingredientes y ponle tu nombre — $190</p>
+    </div>
+    <a href="salsa-macha.html" class="btn-primary">Personalizar ahora →</a>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="proceso reveal">
+  <div class="section-header">
+    <span class="section-tag">Cómo funciona</span>
+    <h2>Simple y directo</h2>
+  </div>
+  <div class="proceso-grid">
+    <div class="proceso-item">
+      <div class="proceso-num">01</div>
+      <h3>Elige tu salsa</h3>
+      <p>Selecciona de nuestra línea permanente o personaliza la tuya desde cero con los ingredientes que más te gusten.</p>
+    </div>
+    <div class="proceso-item">
+      <div class="proceso-num">02</div>
+      <h3>Haz tu pedido</h3>
+      <p>Agrega al carrito y contáctanos por WhatsApp o directamente en la página. Te confirmamos disponibilidad al momento.</p>
+    </div>
+    <div class="proceso-item">
+      <div class="proceso-num">03</div>
+      <h3>Recibe en casa</h3>
+      <p>Enviamos a toda la República Mexicana. Tu salsa llegará bien empacada y lista para disfrutar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ENVÍOS -->
+<section class="envios reveal" id="envios">
+  <div class="envios-inner">
+    <div class="envio-card">
+      <span class="envio-icon">📦</span>
+      <h3>Envíos a México</h3>
+      <p>Mandamos a toda la República Mexicana. El costo de envío se calcula según tu ubicación.</p>
+    </div>
+    <div class="envio-card">
+      <span class="envio-icon">💳</span>
+      <h3>Pago seguro</h3>
+      <p>Aceptamos transferencia bancaria, Mercado Pago y efectivo en CDMX.</p>
+    </div>
+    <div class="envio-card">
+      <span class="envio-icon">🌶️</span>
+      <h3>Empaque cuidado</h3>
+      <p>Cada frasco sale protegido y sellado para garantizar que llegue en perfectas condiciones.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA WHATSAPP -->
+<section class="cta-section reveal" id="contacto">
+  <h2>¿Tienes alguna<br><em>pregunta?</em></h2>
+  <p>Escríbenos por WhatsApp — respondemos rápido.</p>
+  <a href="https://wa.me/5215610176064?text=Hola,%20me%20interesa%20ordenar%20una%20salsa%20Jam'i%20N'i" class="whatsapp-btn" target="_blank">
+    💬 Escríbenos al WhatsApp
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Jam'i N'i</div>
+  <div class="footer-info">CDMX · WhatsApp: 56 1017 6064</div>
+  <ul class="footer-links">
+    <li><a href="#salsas">Salsas</a></li>
+    <li><a href="salsa-macha.html">Personaliza</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</footer>
+
+<!-- CARRITO FLOTANTE -->
+<div class="carrito-bar" id="carrito-bar">
+  <div class="carrito-info">
+    <span id="carrito-items">0 producto(s)</span>
+    <small>— Total: $<span id="carrito-total">0</span> MXN</small>
+  </div>
+  <div class="carrito-acciones">
+    <button class="carrito-vaciar" onclick="vaciarCarrito()">Vaciar</button>
+    <a class="carrito-pedir" id="carrito-wa" href="#" target="_blank">Pedir por WhatsApp</a>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>¡Agregado al carrito!</h3>
+    <p id="modal-msg">Tu salsa fue agregada exitosamente.</p>
+    <button class="modal-close" onclick="cerrarModal()">Continuar comprando</button>
+  </div>
+</div>
+
+<script>
+const salsas = [
+  {
+    id: 'frutos-secos',
+    nombre: 'Edición Frutos Secos',
+    desc: 'Mezcla especial de chiles con una selección de frutos secos premium. Un sabor complejo, texturizado y muy especial.',
+    calaveras: 1,
+    precio: 125,
+    tag: 'Suave'
+  },
+  {
+    id: 'calavera',
+    nombre: 'Calavera',
+    desc: 'Mezcla intensa de chiles con ajonjolí y pepita. Sabores ahumados profundos que te dejan sin palabras.',
+    calaveras: 5,
+    precio: 125,
+    tag: 'Muy picosa'
+  },
+  {
+    id: 'clasica',
+    nombre: 'Clásica',
+    desc: 'Mezcla de chiles con cacahuate y un toque ligeramente dulce. El equilibrio perfecto entre sabor y picor.',
+    calaveras: 3,
+    precio: 125,
+    tag: 'Media'
+  },
+  {
+    id: 'italiana',
+    nombre: 'Italiana',
+    desc: 'Chile quebrado con mezcla de ajo y especias seleccionadas. Un perfil aromático único con inspiración mediterránea.',
+    calaveras: 2,
+    precio: 125,
+    tag: 'Leve-media'
+  }
+];
+
+let carrito = [];
+
+function renderSalsas() {
+  const grid = document.getElementById('salsas-grid');
+  grid.innerHTML = salsas.map((s, i) => {
+    const enCarrito = carrito.some(c => c.id === s.id);
+    const calavs = Array.from({length: 5}, (_, j) => `<span class="calavera ${j < s.calaveras ? 'on' : ''}">💀</span>`).join('');
+    return `
+    <div class="salsa-card" style="animation: fadeUp 0.5s ease ${i * 0.1}s both">
+      <div class="salsa-nombre">${s.nombre}</div>
+      <div class="salsa-desc">${s.desc}</div>
+      <div class="calaveras">${calavs}<span class="calaveras-label">${s.calaveras}/5 💀</span></div>
+      <div class="salsa-footer">
+        <div class="salsa-precio">$${s.precio} <small>MXN</small></div>
+        <button class="agregar-btn ${enCarrito ? 'agregado' : ''}" onclick="toggleCarrito('${s.id}')">
+          ${enCarrito ? '✓ Agregado' : 'Agregar'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCarrito(id) {
+  const salsa = salsas.find(s => s.id === id);
+  const idx = carrito.findIndex(c => c.id === id);
+  if (idx === -1) {
+    carrito.push({...salsa, cantidad: 1});
+    document.getElementById('modal-msg').textContent = `"${salsa.nombre}" fue agregada a tu carrito.`;
+    document.getElementById('modal').classList.add('open');
+  } else {
+    carrito.splice(idx, 1);
+  }
+  renderSalsas();
+  actualizarCarrito();
+}
+
+function actualizarCarrito() {
+  const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+  const count = carrito.reduce((s, i) => s + i.cantidad, 0);
+  document.getElementById('carrito-items').textContent = `${count} producto(s)`;
+  document.getElementById('carrito-total').textContent = total;
+  document.getElementById('nav-count').textContent = count;
+  document.getElementById('nav-count').classList.toggle('visible', count > 0);
+  document.getElementById('carrito-bar').classList.toggle('visible', count > 0);
+
+  const resumen = carrito.map(i => `${i.nombre} x${i.cantidad} $${i.precio * i.cantidad}`).join(', ');
+  const msg = encodeURIComponent(`Hola! Quiero ordenar de Jam'i N'i:\n${resumen}\nTotal: $${total} MXN`);
+  document.getElementById('carrito-wa').href = `https://wa.me/5215610176064?text=${msg}`;
+}
+
+function vaciarCarrito() {
+  carrito = [];
+  renderSalsas();
+  actualizarCarrito();
+}
+
+function verCarrito() {
+  if (carrito.length === 0) {
+    alert('Tu carrito está vacío. ¡Agrega alguna salsa!');
+    return;
+  }
+  document.getElementById('carrito-bar').classList.add('visible');
+  document.getElementById('carrito-bar').scrollIntoView({behavior: 'smooth'});
+}
+
+function cerrarModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+renderSalsas();
+</script>
+</body>
+</html>

@@ -3,783 +3,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Noir Kitchen — Crea tu Salsa Macha</title>
+<title>Jam'i N'i — Crea tu Salsa Macha</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --negro: #0a0a0a;
-  --carbon: #111111;
-  --grafito: #1a1a1a;
-  --borde: #2a2a2a;
-  --oro: #c9a84c;
-  --oro-claro: #e8c97a;
-  --rojo: #c0392b;
-  --rojo-vivo: #e74c3c;
-  --crema: #f5f0e8;
-  --gris: #888;
-  --gris-claro: #bbb;
+  --negro: #0a0a0a; --carbon: #111111; --grafito: #1a1a1a; --borde: #2a2a2a;
+  --oro: #c9a84c; --oro-claro: #e8c97a; --rojo-vivo: #c0392b;
+  --crema: #f5f0e8; --gris: #888; --gris-claro: #bbb;
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Cormorant Garamond', Georgia, serif;
 }
 html { scroll-behavior: smooth; }
-body {
-  background: var(--negro);
-  color: var(--crema);
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.7;
-  min-height: 100vh;
-}
-
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 48px;
-  background: rgba(10,10,10,0.95);
-  border-bottom: 1px solid var(--borde);
-}
-.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.2em; color: var(--oro); text-transform: uppercase; text-decoration: none; }
+body { background: var(--negro); color: var(--crema); font-family: var(--font-body); font-size: 17px; line-height: 1.7; min-height: 100vh; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(10,10,10,0.96); border-bottom: 1px solid var(--borde); }
+.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.15em; color: var(--oro); text-decoration: none; font-style: italic; }
 .nav-back { color: var(--gris); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: color 0.3s; }
 .nav-back:hover { color: var(--oro); }
-
-/* HERO MINI */
-.page-hero {
-  padding: 120px 48px 60px;
-  text-align: center;
-  background: radial-gradient(ellipse at 50% 80%, rgba(192,57,43,0.08) 0%, transparent 60%), var(--negro);
-  position: relative;
-  overflow: hidden;
-}
-.page-hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px),
-    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px);
-  pointer-events: none;
-}
-.hero-tag { font-size: 11px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--oro); margin-bottom: 20px; display: block; }
-.page-hero h1 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 80px); font-weight: 400; line-height: 1.05; margin-bottom: 16px; }
+.page-hero { padding: 120px 48px 56px; text-align: center; background: radial-gradient(ellipse at 50% 80%, rgba(139,26,26,0.1) 0%, transparent 60%), var(--negro); position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px); pointer-events: none; }
+.hero-tag { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 18px; display: block; }
+.page-hero h1 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 76px); font-weight: 400; line-height: 1.05; margin-bottom: 14px; }
 .page-hero h1 em { font-style: italic; color: var(--rojo-vivo); }
-.page-hero p { font-size: 18px; color: var(--gris-claro); font-weight: 300; max-width: 500px; margin: 0 auto; }
-
-/* PROGRESO */
-.progress-wrap {
-  padding: 0 48px;
-  max-width: 900px;
-  margin: 0 auto 0;
-  position: sticky;
-  top: 61px;
-  z-index: 50;
-  background: var(--negro);
-  border-bottom: 1px solid var(--borde);
-}
-.steps-bar {
-  display: flex;
-  padding: 16px 0;
-  gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
+.page-hero p { font-size: 18px; color: var(--gris-claro); font-weight: 300; max-width: 480px; margin: 0 auto; }
+.progress-wrap { padding: 0 48px; max-width: 860px; margin: 0 auto; position: sticky; top: 61px; z-index: 50; background: var(--negro); border-bottom: 1px solid var(--borde); }
+.steps-bar { display: flex; padding: 14px 0; gap: 0; overflow-x: auto; scrollbar-width: none; }
 .steps-bar::-webkit-scrollbar { display: none; }
-.step-item {
-  display: flex; align-items: center; gap: 10px;
-  flex-shrink: 0; cursor: pointer;
-  padding: 6px 16px 6px 0;
-  transition: opacity 0.3s;
-}
+.step-item { display: flex; align-items: center; gap: 8px; flex-shrink: 0; cursor: pointer; padding: 4px 14px 4px 0; }
 .step-item:first-child { padding-left: 0; }
-.step-num {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--borde);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; color: var(--gris);
-  transition: all 0.3s; flex-shrink: 0;
-  font-family: var(--font-body);
-}
+.step-num { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--borde); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gris); transition: all 0.3s; flex-shrink: 0; font-family: var(--font-body); }
 .step-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); transition: color 0.3s; white-space: nowrap; }
-.step-arrow { color: var(--borde); font-size: 12px; margin-left: 6px; }
-.step-item.active .step-num { background: var(--oro); border-color: var(--oro); color: var(--negro); font-weight: 700; }
-.step-item.active .step-label { color: var(--oro); }
+.step-arrow { color: var(--borde); font-size: 11px; margin-left: 4px; }
+.step-item.active .step-num { background: var(--rojo-vivo); border-color: var(--rojo-vivo); color: white; font-weight: 700; }
+.step-item.active .step-label { color: var(--rojo-vivo); }
 .step-item.done .step-num { background: var(--grafito); border-color: var(--oro); color: var(--oro); }
 .step-item.done .step-label { color: var(--gris-claro); }
-.progress-bar-line {
-  height: 2px; background: var(--borde);
-  position: relative; margin-top: 0;
-}
-.progress-fill {
-  height: 100%; background: var(--oro);
-  transition: width 0.5s ease; width: 0%;
-}
-
-/* CONFIGURADOR */
-.configurador {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 48px 48px 120px;
-}
+.progress-line { height: 2px; background: var(--borde); }
+.progress-fill { height: 100%; background: var(--rojo-vivo); transition: width 0.5s ease; width: 0%; }
+.config { max-width: 860px; margin: 0 auto; padding: 48px 48px 120px; }
 .step-panel { display: none; }
 .step-panel.active { display: block; animation: fadeStep 0.4s ease; }
-@keyframes fadeStep { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-.step-title {
-  font-family: var(--font-display);
-  font-size: 32px; font-weight: 400;
-  margin-bottom: 8px;
-}
+@keyframes fadeStep { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+.step-title { font-family: var(--font-display); font-size: 30px; font-weight: 400; margin-bottom: 6px; }
 .step-title em { font-style: italic; color: var(--oro); }
-.step-subtitle { color: var(--gris-claro); font-size: 16px; margin-bottom: 36px; font-weight: 300; }
-
-/* OPCIONES GRID */
-.opciones-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-bottom: 40px;
-}
-.opcion-card {
-  border: 1px solid var(--borde);
-  background: var(--grafito);
-  padding: 24px 20px;
-  cursor: pointer;
-  transition: border-color 0.25s, transform 0.2s, background 0.25s;
-  position: relative;
-  overflow: hidden;
-  user-select: none;
-}
-.opcion-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at top left, rgba(201,168,76,0.06), transparent 70%);
-  opacity: 0; transition: opacity 0.3s;
-}
-.opcion-card:hover { border-color: rgba(201,168,76,0.35); transform: translateY(-3px); }
-.opcion-card:hover::before { opacity: 1; }
-.opcion-card.selected { border-color: var(--oro); background: rgba(201,168,76,0.06); }
-.opcion-card.selected::after {
-  content: '✓';
-  position: absolute; top: 10px; right: 12px;
-  color: var(--oro); font-size: 14px; font-weight: 700;
-}
-.opcion-icon { font-size: 36px; margin-bottom: 12px; display: block; line-height: 1; }
-.opcion-name { font-family: var(--font-display); font-size: 18px; font-weight: 400; margin-bottom: 4px; }
-.opcion-desc { font-size: 13px; color: var(--gris); font-weight: 300; line-height: 1.5; }
-.opcion-badge {
-  display: inline-block; margin-top: 10px;
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-  padding: 3px 10px; border-radius: 20px;
-}
-.badge-suave { background: rgba(39,174,96,0.15); color: #5dbb7e; }
-.badge-medio { background: rgba(230,126,34,0.15); color: #f0a45d; }
-.badge-fuerte { background: rgba(192,57,43,0.15); color: #e07070; }
-.badge-premium { background: rgba(201,168,76,0.15); color: var(--oro-claro); }
-
-/* INTENSIDAD SLIDER */
-.intensidad-wrap { margin-bottom: 40px; }
-.intensidad-label {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 16px;
-}
-.intensidad-label span { font-size: 13px; color: var(--gris); letter-spacing: 0.1em; text-transform: uppercase; }
-.intensidad-label strong { font-family: var(--font-display); font-size: 28px; color: var(--oro); }
-.slider-wrap { position: relative; padding: 8px 0; }
-input[type=range] {
-  width: 100%; height: 4px;
-  background: var(--borde);
-  border-radius: 2px;
-  outline: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: var(--oro);
-  border: 2px solid var(--negro);
-  box-shadow: 0 0 0 1px var(--oro);
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-.intensidad-emojis {
-  display: flex; justify-content: space-between;
-  margin-top: 12px;
-  font-size: 11px; color: var(--gris); letter-spacing: 0.1em;
-}
-
-/* EXTRAS TOGGLE */
-.extras-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
-  margin-bottom: 40px;
-}
-.extra-toggle {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 18px;
-  border: 1px solid var(--borde);
-  background: var(--grafito);
-  cursor: pointer;
-  transition: border-color 0.25s, background 0.25s;
-  user-select: none;
-}
-.extra-toggle:hover { border-color: rgba(201,168,76,0.3); }
-.extra-toggle.on { border-color: var(--oro); background: rgba(201,168,76,0.05); }
-.toggle-box {
-  width: 20px; height: 20px; border: 1px solid var(--borde);
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-.extra-toggle.on .toggle-box { background: var(--oro); border-color: var(--oro); }
-.toggle-check { color: var(--negro); font-size: 12px; font-weight: 700; opacity: 0; transition: opacity 0.2s; }
-.extra-toggle.on .toggle-check { opacity: 1; }
-.extra-info { flex: 1; }
-.extra-name { font-size: 15px; font-weight: 400; margin-bottom: 2px; }
-.extra-desc { font-size: 12px; color: var(--gris); }
-
-/* TAMAÑO */
-.tamano-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 40px;
-}
-.tamano-card {
-  border: 1px solid var(--borde);
-  background: var(--grafito);
-  padding: 28px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.25s, transform 0.2s;
-  position: relative;
-}
-.tamano-card:hover { border-color: rgba(201,168,76,0.35); transform: translateY(-3px); }
-.tamano-card.selected { border-color: var(--oro); }
-.tamano-card.selected::after { content: '✓'; position: absolute; top: 10px; right: 12px; color: var(--oro); font-size: 14px; }
-.tamano-icon { font-size: 40px; margin-bottom: 12px; display: block; }
-.tamano-nombre { font-family: var(--font-display); font-size: 20px; margin-bottom: 4px; }
-.tamano-ml { font-size: 13px; color: var(--gris); margin-bottom: 12px; }
-.tamano-precio { font-family: var(--font-display); font-size: 24px; color: var(--oro); }
-.tamano-precio small { font-family: var(--font-body); font-size: 13px; color: var(--gris); }
-.tamano-popular {
-  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-  background: var(--oro); color: var(--negro);
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-  padding: 3px 14px;
-  white-space: nowrap;
-}
-
-/* RESUMEN */
-.resumen-card {
-  border: 1px solid var(--borde);
-  background: var(--grafito);
-  padding: 36px;
-  margin-bottom: 28px;
-}
-.resumen-titulo {
-  font-family: var(--font-display);
-  font-size: 26px; margin-bottom: 24px; padding-bottom: 16px;
-  border-bottom: 1px solid var(--borde);
-}
-.resumen-fila {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 12px 0; border-bottom: 1px solid rgba(42,42,42,0.5);
-  gap: 16px;
-}
+.step-subtitle { color: var(--gris-claro); font-size: 16px; margin-bottom: 24px; font-weight: 300; }
+.step-limit { display: inline-block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rojo-vivo); background: rgba(192,57,43,0.1); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(192,57,43,0.2); }
+.opciones-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; margin-bottom: 36px; }
+.opcion-card { border: 1px solid var(--borde); background: var(--grafito); padding: 20px 16px; cursor: pointer; transition: border-color 0.25s, transform 0.2s; position: relative; overflow: hidden; user-select: none; }
+.opcion-card:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-2px); }
+.opcion-card.selected { border-color: var(--oro); background: rgba(201,168,76,0.05); }
+.opcion-card.selected::after { content: '✓'; position: absolute; top: 10px; right: 12px; color: var(--oro); font-size: 13px; font-weight: 700; }
+.opcion-card.disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+.opcion-icon { font-size: 28px; margin-bottom: 10px; display: block; line-height: 1; }
+.opcion-name { font-family: var(--font-display); font-size: 16px; font-weight: 400; margin-bottom: 4px; }
+.opcion-desc { font-size: 12px; color: var(--gris); font-weight: 300; line-height: 1.5; }
+.nombre-wrap { margin-bottom: 36px; }
+.nombre-label { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 10px; display: block; }
+.nombre-input { width: 100%; background: var(--grafito); border: 1px solid var(--borde); color: var(--crema); padding: 16px 20px; font-family: var(--font-display); font-size: 22px; outline: none; transition: border-color 0.3s; font-style: italic; }
+.nombre-input:focus { border-color: var(--oro); }
+.nombre-input::placeholder { color: var(--gris); font-style: italic; }
+.nombre-hint { font-size: 13px; color: var(--gris); margin-top: 8px; }
+.frasco-preview { margin: 0 auto 36px; text-align: center; }
+.frasco-svg { width: 140px; height: 180px; }
+.frasco-nombre { font-family: var(--font-display); font-size: 15px; color: var(--gris-claro); margin-top: 10px; font-style: italic; }
+.resumen-card { border: 1px solid var(--borde); background: var(--grafito); padding: 32px; margin-bottom: 24px; }
+.resumen-titulo { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--borde); }
+.resumen-fila { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid rgba(42,42,42,0.5); gap: 16px; }
 .resumen-fila:last-of-type { border-bottom: none; }
-.resumen-key { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gris); min-width: 120px; padding-top: 2px; }
-.resumen-val { font-size: 17px; color: var(--crema); text-align: right; }
-.resumen-total {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--borde);
-}
+.resumen-key { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gris); min-width: 110px; padding-top: 2px; }
+.resumen-val { font-size: 16px; color: var(--crema); text-align: right; }
+.resumen-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--borde); }
 .resumen-total span { font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
 .resumen-total strong { font-family: var(--font-display); font-size: 40px; color: var(--oro); }
-
-/* FRASCO VISUAL */
-.frasco-preview {
-  margin: 0 auto 40px;
-  text-align: center;
-  position: relative;
-}
-.frasco-svg { width: 160px; height: 200px; }
-.frasco-label-preview {
-  font-family: var(--font-display);
-  font-size: 14px; color: var(--gris-claro);
-  margin-top: 12px; font-style: italic;
-}
-
-/* NAVEGACIÓN PASOS */
-.nav-steps {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-top: 40px; padding-top: 28px;
-  border-top: 1px solid var(--borde);
-}
-.btn-prev {
-  padding: 14px 32px;
-  background: none; border: 1px solid var(--borde);
-  color: var(--gris); font-family: var(--font-body); font-size: 14px;
-  letter-spacing: 0.15em; text-transform: uppercase;
-  cursor: pointer; transition: all 0.3s;
-}
+.nav-steps { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--borde); }
+.btn-prev { padding: 13px 28px; background: none; border: 1px solid var(--borde); color: var(--gris); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
 .btn-prev:hover { border-color: var(--gris-claro); color: var(--crema); }
-.btn-next {
-  padding: 14px 44px;
-  background: var(--oro); border: none;
-  color: var(--negro); font-family: var(--font-body); font-size: 14px;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  cursor: pointer; transition: background 0.3s, transform 0.2s;
-}
-.btn-next:hover { background: var(--oro-claro); transform: translateY(-2px); }
+.btn-next { padding: 13px 40px; background: var(--rojo-vivo); border: none; color: white; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.3s, transform 0.2s; }
+.btn-next:hover { background: #a93226; transform: translateY(-2px); }
 .btn-next:disabled { background: var(--borde); color: var(--gris); cursor: not-allowed; transform: none; }
-
-/* MODAL CONFIRMACIÓN */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 300;
-  background: rgba(0,0,0,0.9);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s;
-}
+.btn-next.gold { background: var(--oro); color: var(--negro); }
+.btn-next.gold:hover { background: var(--oro-claro); }
+.modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--grafito); border: 1px solid var(--borde);
-  padding: 56px 48px; max-width: 520px; width: 90%;
-  text-align: center;
-  transform: translateY(20px); transition: transform 0.3s;
-}
+.modal { background: var(--grafito); border: 1px solid var(--borde); padding: 48px; max-width: 500px; width: 100%; text-align: center; transform: translateY(20px); transition: transform 0.3s; }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-icon { font-size: 64px; margin-bottom: 20px; display: block; }
-.modal h2 { font-family: var(--font-display); font-size: 32px; font-weight: 400; color: var(--oro); margin-bottom: 12px; }
-.modal p { color: var(--gris-claro); margin-bottom: 32px; font-size: 17px; }
-.modal-detail {
-  background: var(--negro); padding: 16px 20px;
-  border-left: 2px solid var(--oro);
-  text-align: left; margin-bottom: 28px;
-  font-size: 15px; color: var(--gris-claro);
-  line-height: 1.8;
+.modal-icon { font-size: 56px; margin-bottom: 16px; display: block; }
+.modal h3 { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--oro); margin-bottom: 10px; }
+.modal p { color: var(--gris-claro); margin-bottom: 12px; font-size: 16px; }
+.modal-detail { background: var(--negro); padding: 14px 18px; border-left: 2px solid var(--rojo-vivo); text-align: left; margin-bottom: 24px; font-size: 14px; color: var(--gris-claro); line-height: 1.9; }
+.modal-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.modal-wa { display: inline-block; padding: 13px 28px; background: #25D366; color: white; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: opacity 0.3s; }
+.modal-wa:hover { opacity: 0.9; }
+.modal-close { padding: 13px 28px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .page-hero { padding: 100px 24px 40px; }
+  .progress-wrap { padding: 0 20px; }
+  .config { padding: 32px 20px 100px; }
 }
-.modal-close {
-  padding: 14px 44px; background: var(--oro);
-  border: none; color: var(--negro);
-  font-family: var(--font-body); font-size: 14px;
-  letter-spacing: 0.2em; text-transform: uppercase;
-  cursor: pointer; transition: background 0.3s;
-}
-.modal-close:hover { background: var(--oro-claro); }
-
-/* FLAMES ANIMACIÓN */
-@keyframes flicker {
-  0%, 100% { transform: scaleY(1) scaleX(1); }
-  25% { transform: scaleY(1.04) scaleX(0.97); }
-  75% { transform: scaleY(0.97) scaleX(1.02); }
-}
-
-/* CALOR INDICADOR */
-.calor-meter {
-  display: flex; gap: 4px; margin-bottom: 6px;
-}
-.calor-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--borde); transition: background 0.3s;
-}
-.calor-dot.on { background: var(--rojo-vivo); }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
 <nav>
-  <a href="restaurante.html" class="logo">Noir Kitchen</a>
-  <a href="restaurante.html" class="nav-back">← Volver al menú</a>
+  <a href="index.html" class="logo">Jam'i N'i</a>
+  <a href="index.html" class="nav-back">← Ver salsas de línea</a>
 </nav>
 
-<!-- HERO -->
 <section class="page-hero">
-  <span class="hero-tag">Experiencia artesanal</span>
+  <span class="hero-tag">Edición personalizada · $190 MXN</span>
   <h1>Crea tu<br><em>Salsa Macha</em></h1>
-  <p>Elige cada ingrediente, ajusta el picor y obtén tu frasco personalizado.</p>
+  <p>Elige tus chiles, ingredientes y ponle tu nombre. Tu salsa, tu identidad.</p>
 </section>
 
-<!-- BARRA DE PROGRESO -->
 <div class="progress-wrap">
-  <div class="steps-bar" id="steps-bar">
-    <div class="step-item active" onclick="irPaso(0)">
-      <div class="step-num">1</div>
-      <div class="step-label">Chile base</div>
-      <span class="step-arrow">›</span>
-    </div>
-    <div class="step-item" onclick="irPaso(1)">
-      <div class="step-num">2</div>
-      <div class="step-label">Intensidad</div>
-      <span class="step-arrow">›</span>
-    </div>
-    <div class="step-item" onclick="irPaso(2)">
-      <div class="step-num">3</div>
-      <div class="step-label">Extras</div>
-      <span class="step-arrow">›</span>
-    </div>
-    <div class="step-item" onclick="irPaso(3)">
-      <div class="step-num">4</div>
-      <div class="step-label">Tamaño</div>
-      <span class="step-arrow">›</span>
-    </div>
-    <div class="step-item" onclick="irPaso(4)">
-      <div class="step-num">5</div>
-      <div class="step-label">Tu salsa</div>
-    </div>
+  <div class="steps-bar">
+    <div class="step-item active" onclick="irPaso(0)"><div class="step-num">1</div><div class="step-label">Chiles</div><span class="step-arrow">›</span></div>
+    <div class="step-item" onclick="irPaso(1)"><div class="step-num">2</div><div class="step-label">Ingredientes</div><span class="step-arrow">›</span></div>
+    <div class="step-item" onclick="irPaso(2)"><div class="step-num">3</div><div class="step-label">Nombre</div><span class="step-arrow">›</span></div>
+    <div class="step-item" onclick="irPaso(3)"><div class="step-num">4</div><div class="step-label">Tu salsa</div></div>
   </div>
-  <div class="progress-bar-line"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-line"><div class="progress-fill" id="progress-fill"></div></div>
 </div>
 
-<!-- CONFIGURADOR -->
-<div class="configurador">
-
-  <!-- PASO 1: Chile base -->
+<div class="config">
+  <!-- PASO 1 -->
   <div class="step-panel active" id="paso-0">
-    <div class="step-title">Elige tu <em>chile base</em></div>
-    <p class="step-subtitle">El alma de tu salsa macha. Selecciona uno o combina dos.</p>
+    <div class="step-title">Elige tus <em>chiles</em></div>
+    <p class="step-subtitle">La base de tu salsa macha. Elige hasta 2 chiles para crear tu perfil de sabor único.</p>
+    <div class="step-limit">Máximo 2 chiles</div>
     <div class="opciones-grid" id="chiles-grid"></div>
     <div class="nav-steps">
       <div></div>
-      <button class="btn-next" onclick="siguiente()" id="btn-next-0">Siguiente →</button>
+      <button class="btn-next" id="btn-next-0" onclick="siguiente()" disabled>Siguiente →</button>
     </div>
   </div>
 
-  <!-- PASO 2: Intensidad -->
+  <!-- PASO 2 -->
   <div class="step-panel" id="paso-1">
-    <div class="step-title">Nivel de <em>picor</em></div>
-    <p class="step-subtitle">Define qué tan intensa quieres tu salsa macha.</p>
-    <div class="intensidad-wrap">
-      <div class="intensidad-label">
-        <span>Intensidad</span>
-        <strong id="intensidad-label">Medio</strong>
-      </div>
-      <div class="calor-meter" id="calor-meter"></div>
-      <div class="slider-wrap">
-        <input type="range" min="1" max="5" value="3" id="slider-picor" oninput="actualizarPicor(this.value)">
-      </div>
-      <div class="intensidad-emojis">
-        <span>Suave</span>
-        <span>Medio</span>
-        <span>Fuerte</span>
-        <span>Muy fuerte</span>
-        <span>Extremo</span>
-      </div>
-    </div>
+    <div class="step-title">Elige tus <em>extras</em></div>
+    <p class="step-subtitle">Complementa tu salsa con ingredientes especiales para una experiencia única.</p>
+    <div class="step-limit">Máximo 3 ingredientes</div>
+    <div class="opciones-grid" id="extras-grid"></div>
     <div class="nav-steps">
       <button class="btn-prev" onclick="anterior()">← Atrás</button>
       <button class="btn-next" onclick="siguiente()">Siguiente →</button>
     </div>
   </div>
 
-  <!-- PASO 3: Extras -->
+  <!-- PASO 3 -->
   <div class="step-panel" id="paso-2">
-    <div class="step-title">Añade tus <em>extras</em></div>
-    <p class="step-subtitle">Personaliza tu salsa con ingredientes especiales. Puedes elegir varios.</p>
-    <div class="extras-grid" id="extras-grid"></div>
+    <div class="step-title">Ponle <em>nombre</em></div>
+    <p class="step-subtitle">Dale una identidad única a tu salsa. Este nombre aparecerá en la etiqueta de tu frasco.</p>
+    <div class="nombre-wrap">
+      <label class="nombre-label" for="nombre-salsa">Nombre de tu salsa</label>
+      <input type="text" id="nombre-salsa" class="nombre-input" placeholder="Ej: La Macha de Juan..." maxlength="30" oninput="actualizarNombre()">
+      <p class="nombre-hint">Máximo 30 caracteres · Aparecerá impreso en tu etiqueta personalizada</p>
+    </div>
     <div class="nav-steps">
       <button class="btn-prev" onclick="anterior()">← Atrás</button>
-      <button class="btn-next" onclick="siguiente()">Siguiente →</button>
+      <button class="btn-next" id="btn-next-2" onclick="siguiente()" disabled>Siguiente →</button>
     </div>
   </div>
 
-  <!-- PASO 4: Tamaño -->
+  <!-- PASO 4 -->
   <div class="step-panel" id="paso-3">
-    <div class="step-title">Elige el <em>tamaño</em></div>
-    <p class="step-subtitle">¿Para cuánto alcanza tu salsa?</p>
-    <div class="tamano-grid" id="tamanos-grid"></div>
-    <div class="nav-steps">
-      <button class="btn-prev" onclick="anterior()">← Atrás</button>
-      <button class="btn-next" onclick="siguiente()" id="btn-next-3">Siguiente →</button>
-    </div>
-  </div>
-
-  <!-- PASO 5: Resumen -->
-  <div class="step-panel" id="paso-4">
     <div class="step-title">Tu <em>Salsa Macha</em></div>
     <p class="step-subtitle">Revisa tu creación antes de ordenar.</p>
-
     <div class="frasco-preview">
-      <svg class="frasco-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="frascoClip">
-            <path d="M55 55 Q50 60 42 75 L35 160 Q34 175 45 180 L115 180 Q126 175 125 160 L118 75 Q110 60 105 55 Z"/>
-          </clipPath>
-        </defs>
-        <!-- Tapa -->
-        <rect x="58" y="30" width="44" height="28" rx="4" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1.5"/>
-        <rect x="62" y="34" width="36" height="4" rx="2" fill="#c9a84c" opacity="0.4"/>
-        <!-- Cuerpo frasco -->
-        <path d="M55 55 Q50 60 42 75 L35 160 Q34 175 45 180 L115 180 Q126 175 125 160 L118 75 Q110 60 105 55 Z" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
-        <!-- Relleno dinámico -->
-        <rect id="frasco-fill" x="36" y="90" width="89" height="90" fill="#8B0000" opacity="0.7" clip-path="url(#frascoClip)"/>
-        <!-- Brillo -->
-        <path d="M50 70 Q48 90 46 130" stroke="rgba(255,255,255,0.06)" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <!-- Etiqueta -->
-        <rect x="44" y="105" width="72" height="55" rx="3" fill="#0a0a0a" stroke="#c9a84c" stroke-width="0.8" opacity="0.9"/>
-        <text x="80" y="123" text-anchor="middle" font-family="'Playfair Display', serif" font-size="8" fill="#c9a84c" font-style="italic">Noir Kitchen</text>
-        <text x="80" y="135" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="7" fill="#f5f0e8" id="frasco-chile-txt">Ancho</text>
-        <text x="80" y="147" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="6.5" fill="#888" id="frasco-picor-txt">Picor medio</text>
-        <line x1="50" y1="151" x2="110" y2="151" stroke="#2a2a2a" stroke-width="0.5"/>
-        <text x="80" y="160" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="6" fill="#c9a84c">Artesanal</text>
+      <svg class="frasco-svg" viewBox="0 0 140 180" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="fc"><path d="M48 50 Q44 55 37 68 L30 145 Q29 158 39 163 L101 163 Q111 158 110 145 L103 68 Q96 55 92 50 Z"/></clipPath></defs>
+        <rect x="51" y="24" width="38" height="28" rx="4" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1.5"/>
+        <rect x="55" y="28" width="30" height="4" rx="2" fill="#c9a84c" opacity="0.4"/>
+        <path d="M48 50 Q44 55 37 68 L30 145 Q29 158 39 163 L101 163 Q111 158 110 145 L103 68 Q96 55 92 50 Z" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
+        <rect id="frasco-fill" x="31" y="80" width="78" height="83" fill="#8B1A1A" opacity="0.75" clip-path="url(#fc)"/>
+        <path d="M44 62 Q42 82 40 118" stroke="rgba(255,255,255,0.05)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <rect x="38" y="96" width="64" height="50" rx="3" fill="#0a0a0a" stroke="#c9a84c" stroke-width="0.8" opacity="0.92"/>
+        <text x="70" y="111" text-anchor="middle" font-family="'Playfair Display', serif" font-size="7" fill="#c9a84c" font-style="italic">Jam'i N'i</text>
+        <text x="70" y="122" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="6.5" fill="#f5f0e8" id="frasco-chile-txt">—</text>
+        <line x1="42" y1="133" x2="98" y2="133" stroke="#2a2a2a" stroke-width="0.5"/>
+        <text x="70" y="141" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="6" fill="#c9a84c" id="frasco-nombre-txt">Tu nombre</text>
       </svg>
-      <div class="frasco-label-preview" id="frasco-nombre-preview">Tu salsa personalizada</div>
+      <div class="frasco-nombre" id="frasco-preview-nombre">Tu salsa personalizada</div>
     </div>
-
     <div class="resumen-card" id="resumen-card"></div>
-
     <div class="nav-steps">
       <button class="btn-prev" onclick="anterior()">← Atrás</button>
-      <button class="btn-next" onclick="ordenar()">Agregar al carrito</button>
+      <button class="btn-next gold" onclick="ordenar()">Pedir por WhatsApp 🌶️</button>
     </div>
   </div>
-
 </div>
 
-<!-- MODAL CONFIRMACIÓN -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <span class="modal-icon">🌶️</span>
-    <h2>¡Salsa en camino!</h2>
-    <p>Tu salsa macha personalizada ha sido añadida al pedido.</p>
+    <h3>¡Tu salsa está lista!</h3>
+    <p>Te enviamos a WhatsApp para coordinar tu pedido.</p>
     <div class="modal-detail" id="modal-detail"></div>
-    <button class="modal-close" onclick="cerrarModal()">Volver al menú</button>
+    <div class="modal-btns">
+      <a class="modal-wa" id="modal-wa-btn" href="#" target="_blank">💬 Abrir WhatsApp</a>
+      <button class="modal-close" onclick="cerrarModal()">Crear otra</button>
+    </div>
   </div>
 </div>
 
 <script>
 const chiles = [
-  { id: 'ancho', icon: '🌶️', nombre: 'Ancho', desc: 'Suave, terroso y ligeramente dulce', nivel: 'suave', color: '#6B2222' },
-  { id: 'guajillo', icon: '🫑', nombre: 'Guajillo', desc: 'Frutal, con notas de cereza y tanino', nivel: 'medio', color: '#8B1A1A' },
-  { id: 'morita', icon: '🍒', nombre: 'Morita', desc: 'Ahumado intenso, sabor complejo', nivel: 'medio', color: '#5C1010' },
-  { id: 'de-arbol', icon: '🔥', nombre: 'De árbol', desc: 'Picante brillante, sabor vegetal', nivel: 'fuerte', color: '#A81010' },
-  { id: 'habanero', icon: '⚡', nombre: 'Habanero', desc: 'Frutal y devastadoramente picante', nivel: 'fuerte', color: '#C0390B' },
-  { id: 'pasilla', icon: '✨', nombre: 'Pasilla negro', desc: 'Chocolate oscuro, regaliz y tierra', nivel: 'suave', color: '#3D1010' },
+  { id: 'ancho', icon: '🌶️', nombre: 'Ancho', desc: 'Suave, terroso y ligeramente dulce' },
+  { id: 'guajillo', icon: '🫑', nombre: 'Guajillo', desc: 'Frutal con notas de cereza y tanino' },
+  { id: 'morita', icon: '🍒', nombre: 'Morita', desc: 'Ahumado intenso y sabor complejo' },
+  { id: 'arbol', icon: '🔥', nombre: 'De árbol', desc: 'Picante brillante con sabor vegetal' },
+  { id: 'habanero', icon: '⚡', nombre: 'Habanero tatemado', desc: 'Frutal y devastadoramente picante' },
 ];
-
 const extras = [
-  { id: 'ajo', icon: '🧄', nombre: 'Ajo tostado', desc: 'Profundidad y umami' },
-  { id: 'nuez', icon: '🥜', nombre: 'Nuez de macadamia', desc: 'Cremoso y elegante' },
-  { id: 'ajonjoli', icon: '🌾', nombre: 'Ajonjolí negro', desc: 'Tostado y aromático' },
   { id: 'cacahuate', icon: '🥜', nombre: 'Cacahuate', desc: 'Clásico y crujiente' },
-  { id: 'chocolate', icon: '🍫', nombre: 'Cacao oscuro', desc: 'Amargo y sofisticado' },
-  { id: 'mezcal', icon: '🥃', nombre: 'Mezcal artesanal', desc: 'Toque ahumado premium' },
-  { id: 'miel', icon: '🍯', nombre: 'Miel de abeja', desc: 'Balance dulce-picante' },
-  { id: 'limon', icon: '🍋', nombre: 'Cáscara de limón', desc: 'Frescura cítrica' },
+  { id: 'ajonjoli', icon: '🌾', nombre: 'Ajonjolí', desc: 'Tostado y aromático' },
+  { id: 'nuez-india', icon: '🌰', nombre: 'Nuez de la india', desc: 'Cremosa y delicada' },
+  { id: 'almendra', icon: '🤍', nombre: 'Almendra', desc: 'Suave con toque dulce' },
+  { id: 'arandano', icon: '🫐', nombre: 'Arándano', desc: 'Frutal y ligeramente ácido' },
+  { id: 'nuez', icon: '🍂', nombre: 'Nuez', desc: 'Profunda y mantecosa' },
+  { id: 'pistache', icon: '💚', nombre: 'Pistache', desc: 'Aromático y elegante' },
+  { id: 'pepitas', icon: '🌻', nombre: 'Pepitas', desc: 'Crocantes y nutritivas' },
 ];
-
-const tamanos = [
-  { id: 'chico', icon: '🫙', nombre: 'Chico', ml: '100 ml', precio: 180 },
-  { id: 'mediano', icon: '🫙', nombre: 'Mediano', ml: '250 ml', precio: 320, popular: true },
-  { id: 'grande', icon: '🫙', nombre: 'Grande', ml: '500 ml', precio: 520 },
-];
-
-const nivelLabels = ['', 'Suave', 'Medio bajo', 'Medio', 'Fuerte', 'Extremo 🔥'];
-const nivelColors = ['', '#27ae60', '#e67e22', '#e74c3c', '#c0392b', '#7d1313'];
-
-let estado = {
-  chiles: [],
-  picor: 3,
-  extras: [],
-  tamano: null,
-};
+let estado = { chiles: [], extras: [], nombre: '' };
 let pasoActual = 0;
-const totalPasos = 5;
 
 function renderChiles() {
-  const grid = document.getElementById('chiles-grid');
-  grid.innerHTML = chiles.map(c => {
+  document.getElementById('chiles-grid').innerHTML = chiles.map(c => {
     const sel = estado.chiles.includes(c.id);
-    return `<div class="opcion-card ${sel ? 'selected' : ''}" onclick="toggleChile('${c.id}')">
-      <span class="opcion-icon">${c.icon}</span>
-      <div class="opcion-name">${c.nombre}</div>
-      <div class="opcion-desc">${c.desc}</div>
-      <span class="opcion-badge badge-${c.nivel}">${c.nivel}</span>
-    </div>`;
+    const dis = !sel && estado.chiles.length >= 2;
+    return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleChile(\''+c.id+'\')'}">
+      <span class="opcion-icon">${c.icon}</span><div class="opcion-name">${c.nombre}</div><div class="opcion-desc">${c.desc}</div></div>`;
+  }).join('');
+  document.getElementById('btn-next-0').disabled = estado.chiles.length === 0;
+}
+function renderExtras() {
+  document.getElementById('extras-grid').innerHTML = extras.map(e => {
+    const sel = estado.extras.includes(e.id);
+    const dis = !sel && estado.extras.length >= 3;
+    return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleExtra(\''+e.id+'\')'}">
+      <span class="opcion-icon">${e.icon}</span><div class="opcion-name">${e.nombre}</div><div class="opcion-desc">${e.desc}</div></div>`;
   }).join('');
 }
-
 function toggleChile(id) {
   const i = estado.chiles.indexOf(id);
-  if (i === -1) {
-    if (estado.chiles.length < 2) estado.chiles.push(id);
-    else { estado.chiles.shift(); estado.chiles.push(id); }
-  } else {
-    estado.chiles.splice(i, 1);
-  }
-  renderChiles();
-  actualizarFrasco();
+  if (i===-1) { if(estado.chiles.length<2) estado.chiles.push(id); } else estado.chiles.splice(i,1);
+  renderChiles(); actualizarFrasco();
 }
-
-function renderExtras() {
-  const grid = document.getElementById('extras-grid');
-  grid.innerHTML = extras.map(e => {
-    const on = estado.extras.includes(e.id);
-    return `<div class="extra-toggle ${on ? 'on' : ''}" onclick="toggleExtra('${e.id}')">
-      <div class="toggle-box"><span class="toggle-check">✓</span></div>
-      <div class="extra-info">
-        <div class="extra-name">${e.icon} ${e.nombre}</div>
-        <div class="extra-desc">${e.desc}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
 function toggleExtra(id) {
   const i = estado.extras.indexOf(id);
-  if (i === -1) estado.extras.push(id);
-  else estado.extras.splice(i, 1);
+  if (i===-1) { if(estado.extras.length<3) estado.extras.push(id); } else estado.extras.splice(i,1);
   renderExtras();
 }
-
-function renderTamanos() {
-  const grid = document.getElementById('tamanos-grid');
-  grid.innerHTML = tamanos.map(t => {
-    const sel = estado.tamano === t.id;
-    return `<div class="tamano-card ${sel ? 'selected' : ''}" onclick="selTamano('${t.id}')">
-      ${t.popular ? '<div class="tamano-popular">Más popular</div>' : ''}
-      <span class="tamano-icon">${t.icon}</span>
-      <div class="tamano-nombre">${t.nombre}</div>
-      <div class="tamano-ml">${t.ml}</div>
-      <div class="tamano-precio">$${t.precio} <small>MXN</small></div>
-    </div>`;
-  }).join('');
-}
-
-function selTamano(id) {
-  estado.tamano = id;
-  renderTamanos();
-}
-
-function actualizarPicor(val) {
-  estado.picor = parseInt(val);
-  document.getElementById('intensidad-label').textContent = nivelLabels[estado.picor];
-  document.getElementById('intensidad-label').style.color = nivelColors[estado.picor];
-  const dots = document.querySelectorAll('.calor-dot');
-  dots.forEach((d, i) => d.classList.toggle('on', i < estado.picor));
+function actualizarNombre() {
+  estado.nombre = document.getElementById('nombre-salsa').value;
+  document.getElementById('btn-next-2').disabled = estado.nombre.trim().length === 0;
   actualizarFrasco();
 }
-
-function initCalorMeter() {
-  const m = document.getElementById('calor-meter');
-  m.innerHTML = Array.from({length: 5}, (_, i) => `<div class="calor-dot ${i < 3 ? 'on' : ''}"></div>`).join('');
-}
-
 function actualizarFrasco() {
-  const chileObj = chiles.find(c => c.id === estado.chiles[0]);
-  const color = chileObj ? chileObj.color : '#8B0000';
-  document.getElementById('frasco-fill').style.fill = color;
-  document.getElementById('frasco-chile-txt').textContent = estado.chiles.map(id => chiles.find(c => c.id === id)?.nombre).filter(Boolean).join(' + ') || '—';
-  document.getElementById('frasco-picor-txt').textContent = estado.picor ? `Picor ${nivelLabels[estado.picor].toLowerCase()}` : '—';
-  document.getElementById('frasco-nombre-preview').textContent = estado.chiles.length ? `Macha de ${estado.chiles.map(id => chiles.find(c => c.id === id)?.nombre).join(' y ')}` : 'Tu salsa personalizada';
+  const cn = estado.chiles.map(id=>chiles.find(c=>c.id===id)?.nombre).filter(Boolean).join(' + ');
+  document.getElementById('frasco-chile-txt').textContent = cn || '—';
+  const n = estado.nombre || 'Tu nombre';
+  document.getElementById('frasco-nombre-txt').textContent = n.length>14 ? n.substring(0,14)+'...' : n;
+  document.getElementById('frasco-preview-nombre').textContent = estado.nombre || 'Tu salsa personalizada';
 }
-
 function renderResumen() {
-  const tamanoObj = tamanos.find(t => t.id === estado.tamano);
-  const extrasNombres = estado.extras.map(id => extras.find(e => e.id === id)?.nombre).filter(Boolean);
-
+  const cn = estado.chiles.map(id=>chiles.find(c=>c.id===id)?.nombre).join(' + ');
+  const en = estado.extras.map(id=>extras.find(e=>e.id===id)?.nombre).join(', ');
   document.getElementById('resumen-card').innerHTML = `
     <div class="resumen-titulo">Resumen de tu salsa</div>
-    <div class="resumen-fila">
-      <span class="resumen-key">Chile base</span>
-      <span class="resumen-val">${estado.chiles.map(id => chiles.find(c => c.id === id)?.nombre).join(' + ')}</span>
-    </div>
-    <div class="resumen-fila">
-      <span class="resumen-key">Nivel de picor</span>
-      <span class="resumen-val" style="color:${nivelColors[estado.picor]}">${nivelLabels[estado.picor]}</span>
-    </div>
-    <div class="resumen-fila">
-      <span class="resumen-key">Extras</span>
-      <span class="resumen-val">${extrasNombres.length ? extrasNombres.join(', ') : 'Sin extras adicionales'}</span>
-    </div>
-    <div class="resumen-fila">
-      <span class="resumen-key">Tamaño</span>
-      <span class="resumen-val">${tamanoObj?.nombre} — ${tamanoObj?.ml}</span>
-    </div>
-    <div class="resumen-total">
-      <span>Total</span>
-      <strong>$${tamanoObj?.precio} MXN</strong>
-    </div>
-  `;
+    <div class="resumen-fila"><span class="resumen-key">Nombre</span><span class="resumen-val" style="font-family:var(--font-display);font-style:italic;color:var(--oro)">${estado.nombre}</span></div>
+    <div class="resumen-fila"><span class="resumen-key">Chiles</span><span class="resumen-val">${cn}</span></div>
+    <div class="resumen-fila"><span class="resumen-key">Extras</span><span class="resumen-val">${en||'Sin extras adicionales'}</span></div>
+    <div class="resumen-fila"><span class="resumen-key">Presentación</span><span class="resumen-val">Frasco único · Etiqueta personalizada</span></div>
+    <div class="resumen-total"><span>Total</span><strong>$190 MXN</strong></div>`;
 }
-
-function irPaso(n) {
-  if (n > pasoActual) return;
-  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(`paso-${n}`).classList.add('active');
-  pasoActual = n;
-  actualizarBarraProgreso();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 function siguiente() {
-  if (pasoActual === 0 && estado.chiles.length === 0) return;
-  if (pasoActual === 3 && !estado.tamano) return;
-  if (pasoActual < totalPasos - 1) {
-    document.getElementById(`paso-${pasoActual}`).classList.remove('active');
+  if (pasoActual < 3) {
+    document.getElementById('paso-'+pasoActual).classList.remove('active');
     pasoActual++;
-    document.getElementById(`paso-${pasoActual}`).classList.add('active');
-    actualizarBarraProgreso();
-    if (pasoActual === 4) renderResumen();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('paso-'+pasoActual).classList.add('active');
+    actualizarProgreso();
+    if (pasoActual===3) renderResumen();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 }
-
 function anterior() {
   if (pasoActual > 0) {
-    document.getElementById(`paso-${pasoActual}`).classList.remove('active');
+    document.getElementById('paso-'+pasoActual).classList.remove('active');
     pasoActual--;
-    document.getElementById(`paso-${pasoActual}`).classList.add('active');
-    actualizarBarraProgreso();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('paso-'+pasoActual).classList.add('active');
+    actualizarProgreso();
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 }
-
-function actualizarBarraProgreso() {
-  const items = document.querySelectorAll('.step-item');
-  items.forEach((item, i) => {
-    item.classList.remove('active', 'done');
-    if (i === pasoActual) item.classList.add('active');
-    else if (i < pasoActual) item.classList.add('done');
-  });
-  document.getElementById('progress-fill').style.width = `${(pasoActual / (totalPasos - 1)) * 100}%`;
+function irPaso(n) {
+  if (n > pasoActual) return;
+  document.getElementById('paso-'+pasoActual).classList.remove('active');
+  pasoActual = n;
+  document.getElementById('paso-'+pasoActual).classList.add('active');
+  actualizarProgreso();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
+function actualizarProgreso() {
+  document.querySelectorAll('.step-item').forEach((item,i) => {
+    item.classList.remove('active','done');
+    if(i===pasoActual) item.classList.add('active');
+    else if(i<pasoActual) item.classList.add('done');
+  });
+  document.getElementById('progress-fill').style.width = `${(pasoActual/3)*100}%`;
+}
 function ordenar() {
-  const tamanoObj = tamanos.find(t => t.id === estado.tamano);
-  const extrasNombres = estado.extras.map(id => extras.find(e => e.id === id)?.nombre).filter(Boolean);
-  document.getElementById('modal-detail').innerHTML = `
-    🌶️ <strong>${estado.chiles.map(id => chiles.find(c => c.id === id)?.nombre).join(' + ')}</strong><br>
-    🔥 Picor ${nivelLabels[estado.picor]}<br>
-    ${extrasNombres.length ? `✨ ${extrasNombres.join(', ')}<br>` : ''}
-    🫙 Frasco ${tamanoObj?.nombre} — $${tamanoObj?.precio} MXN
-  `;
+  const cn = estado.chiles.map(id=>chiles.find(c=>c.id===id)?.nombre).join(' + ');
+  const en = estado.extras.map(id=>extras.find(e=>e.id===id)?.nombre).join(', ');
+  document.getElementById('modal-detail').innerHTML = `🌶️ <strong>${estado.nombre}</strong><br>Chiles: ${cn}<br>${en?'Extras: '+en+'<br>':''}Precio: $190 MXN`;
+  const msg = encodeURIComponent(`Hola! Quiero ordenar una salsa macha personalizada Jam'i N'i:\n\n🌶️ Nombre: ${estado.nombre}\nChiles: ${cn}\nExtras: ${en||'Sin extras'}\nTotal: $190 MXN\n\n¿Me pueden dar información sobre el pago y envío?`);
+  document.getElementById('modal-wa-btn').href = `https://wa.me/5215610176064?text=${msg}`;
   document.getElementById('modal').classList.add('open');
 }
-
 function cerrarModal() {
   document.getElementById('modal').classList.remove('open');
+  estado = {chiles:[],extras:[],nombre:''};
   pasoActual = 0;
-  estado = { chiles: [], picor: 3, extras: [], tamano: null };
-  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('paso-0').classList.add('active');
-  actualizarBarraProgreso();
-  renderChiles(); renderExtras(); renderTamanos(); actualizarFrasco();
-  document.getElementById('slider-picor').value = 3;
-  actualizarPicor(3);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  actualizarProgreso();
+  document.getElementById('nombre-salsa').value='';
+  renderChiles(); renderExtras(); actualizarFrasco();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
-// INIT
-renderChiles();
-renderExtras();
-renderTamanos();
-initCalorMeter();
-actualizarPicor(3);
-actualizarFrasco();
+renderChiles(); renderExtras(); actualizarFrasco();
 </script>
 </body>
 </html>
