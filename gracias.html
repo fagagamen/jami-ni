@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam'i N'i — Pago exitoso</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro: #0a0a0a; --grafito: #1a1a1a; --borde: #2a2a2a;
+  --oro: #c9a84c; --oro-claro: #e8c97a; --rojo-vivo: #c0392b;
+  --crema: #f5f0e8; --gris: #888; --gris-claro: #bbb;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+}
+body { background: var(--negro); color: var(--crema); font-family: var(--font-body); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(10,10,10,0.96); border-bottom: 1px solid var(--borde); }
+.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.15em; color: var(--oro); text-decoration: none; font-style: italic; display: flex; align-items: center; }
+.logo img { height: 36px; width: auto; object-fit: contain; }
+.card { background: var(--grafito); border: 1px solid var(--borde); padding: 64px 48px; max-width: 560px; width: 100%; text-align: center; }
+.icono { font-size: 64px; margin-bottom: 24px; display: block; }
+.card h1 { font-family: var(--font-display); font-size: 36px; font-weight: 400; margin-bottom: 12px; }
+.card h1 em { font-style: italic; color: var(--oro); }
+.card p { color: var(--gris-claro); font-size: 17px; font-weight: 300; margin-bottom: 8px; line-height: 1.7; }
+.detalle { background: var(--negro); border-left: 2px solid var(--rojo-vivo); padding: 16px 20px; text-align: left; margin: 24px 0; font-size: 14px; color: var(--gris-claro); line-height: 1.9; }
+.btn-home { display: inline-block; padding: 16px 44px; background: var(--oro); color: var(--negro); font-family: var(--font-body); font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: background 0.3s; margin-top: 8px; }
+.btn-home:hover { background: var(--oro-claro); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <img src="imagenes/logo.png" alt="Jam'i N'i">
+  </a>
+</nav>
+<div class="card">
+  <span class="icono">🌶️</span>
+  <h1>¡Gracias por tu <em>pedido</em>!</h1>
+  <p>Tu pago fue procesado exitosamente. En breve recibirás un correo de confirmación con los detalles de tu pedido y envío.</p>
+  <div class="detalle" id="detalle-pedido">
+    Estamos preparando tu salsa macha con mucho cariño.
+  </div>
+  <p style="font-size:14px;color:var(--gris)">¿Tienes dudas? Escríbenos al WhatsApp: <strong style="color:var(--crema)">56 1017 6064</strong></p>
+  <a href="index.html" class="btn-home" style="margin-top:28px;display:inline-block">Volver a la tienda</a>
+</div>
+<script>
+var pedido = JSON.parse(sessionStorage.getItem("jami_pedido") || "null");
+if (pedido) {
+  var det = document.getElementById("detalle-pedido");
+  var html = "<strong>" + pedido.nombre + "</strong><br>";
+  html += pedido.email + "<br>";
+  html += pedido.calle + ", Col. " + pedido.colonia + "<br>";
+  html += pedido.ciudad + ", " + pedido.estado + " CP " + pedido.cp + "<br><br>";
+  html += "<strong>Total pagado: $" + pedido.total + " MXN</strong>";
+  det.innerHTML = html;
+  sessionStorage.removeItem("jami_carrito");
+  sessionStorage.removeItem("jami_pedido");
+}
+</script>
+</body>
+</html>

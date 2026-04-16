@@ -118,7 +118,7 @@ nav {
 .section-header h2 { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); font-weight: 400; }
 .salsas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px; max-width: 1100px; margin: 0 auto 48px; }
 .salsa-card { background: var(--grafito); padding: 36px 28px; border: 1px solid var(--borde); transition: border-color 0.3s, transform 0.3s; position: relative; overflow: hidden; cursor: pointer; }
-.salsa-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, rgba(139,26,26,0.07), transparent 60%); opacity: 0; transition: opacity 0.3s; }
+.salsa-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, rgba(139,26,26,0.07), transparent 60%); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
 .salsa-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-4px); }
 .salsa-card:hover::before { opacity: 1; }
 .salsa-nombre { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 8px; line-height: 1.2; }
@@ -130,7 +130,7 @@ nav {
 .salsa-footer { display: flex; justify-content: space-between; align-items: center; }
 .salsa-precio { font-family: var(--font-display); font-size: 28px; color: var(--oro); }
 .salsa-precio small { font-size: 13px; color: var(--gris); font-family: var(--font-body); }
-.agregar-btn { padding: 10px 22px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.agregar-btn { padding: 10px 22px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; position: relative; z-index: 1; }
 .agregar-btn:hover, .agregar-btn.agregado { background: var(--oro); border-color: var(--oro); color: var(--negro); }
 
 .personaliza-banner { max-width: 1100px; margin: 0 auto; background: var(--grafito); border: 1px solid var(--borde); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
@@ -336,9 +336,7 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">
-    <img src="imagenes/logo.png" alt="Jam'i Ni" />
-  </div>
+  
   <div class="footer-info">CDMX · WhatsApp: 56 1017 6064</div>
   <ul class="footer-links">
     <li><a href="#salsas">Salsas</a></li>
@@ -355,7 +353,7 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
   </div>
   <div class="carrito-acciones">
     <button class="carrito-vaciar" onclick="vaciarCarrito()">Vaciar</button>
-    <a class="carrito-pedir" id="carrito-wa" href="#" target="_blank">Pedir por WhatsApp</a>
+    <a class="carrito-pedir" href="carrito.html">Ver carrito &rarr;</a>
   </div>
 </div>
 
@@ -369,117 +367,114 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 </div>
 
 <script>
-const salsas = [
-  {
-    id: 'frutos-secos',
-    nombre: 'Edición Frutos Secos',
-    desc: 'Mezcla especial de chiles con una selección de frutos secos premium. Un sabor complejo, texturizado y muy especial.',
-    calaveras: 1,
-    precio: 125,
-    tag: 'Suave'
-  },
-    {
-    id: 'italiana',
-    nombre: 'Italiana',
-    desc: 'Chile quebrado con mezcla de ajo y especias seleccionadas. Un perfil aromático único con inspiración mediterránea.',
-    calaveras: 2,
-    precio: 125,
-    tag: 'Leve-media'
-  },
-    {
-    id: 'clasica',
-    nombre: 'Clásica',
-    desc: 'Mezcla de chiles con cacahuate y un toque ligeramente dulce. El equilibrio perfecto entre sabor y picor.',
-    calaveras: 3,
-    precio: 125,
-    tag: 'Media'
-  },
-  {
-    id: 'calavera',
-    nombre: 'Calavera',
-    desc: 'Mezcla intensa de chiles con ajonjolí y pepita. Sabores ahumados profundos que te dejan sin palabras.',
-    calaveras: 5,
-    precio: 125,
-    tag: 'Muy picosa'
-  }
+var salsas = [
+  { id: "frutos-secos", nombre: "Edición Frutos Secos", desc: "Mezcla especial de chiles con una selección de frutos secos premium. Un sabor complejo, texturizado y muy especial.", calaveras: 1, precio: 125 },
+  { id: "calavera", nombre: "Calavera", desc: "Mezcla intensa de chiles con ajonjolí y pepita. Sabores ahumados profundos que te dejan sin palabras.", calaveras: 5, precio: 125 },
+  { id: "clasica", nombre: "Clásica", desc: "Mezcla de chiles con cacahuate y un toque ligeramente dulce. El equilibrio perfecto entre sabor y picor.", calaveras: 3, precio: 125 },
+  { id: "italiana", nombre: "Italiana", desc: "Chile quebrado con mezcla de ajo y especias seleccionadas. Un perfil aromático único con inspiración mediterránea.", calaveras: 2, precio: 125 }
 ];
 
-let carrito = [];
+var carrito = JSON.parse(sessionStorage.getItem("jami_carrito") || "[]");
 
 function renderSalsas() {
-  const grid = document.getElementById('salsas-grid');
-  grid.innerHTML = salsas.map((s, i) => {
-    const enCarrito = carrito.some(c => c.id === s.id);
-    const calavs = Array.from({length: 5}, (_, j) => `<span class="calavera ${j < s.calaveras ? 'on' : ''}">💀</span>`).join('');
-    return `
-    <div class="salsa-card" style="animation: fadeUp 0.5s ease ${i * 0.1}s both">
-      <div class="salsa-nombre">${s.nombre}</div>
-      <div class="salsa-desc">${s.desc}</div>
-      <div class="calaveras">${calavs}<span class="calaveras-label">${s.calaveras}/5 💀</span></div>
-      <div class="salsa-footer">
-        <div class="salsa-precio">$${s.precio} <small>MXN</small></div>
-        <button class="agregar-btn ${enCarrito ? 'agregado' : ''}" onclick="toggleCarrito('${s.id}')">
-          ${enCarrito ? '✓ Agregado' : 'Agregar'}
-        </button>
-      </div>
-    </div>`;
-  }).join('');
+  var grid = document.getElementById("salsas-grid");
+  if (!grid) return;
+  var html = "";
+  for (var i = 0; i < salsas.length; i++) {
+    var s = salsas[i];
+    var enCarrito = false;
+    for (var j = 0; j < carrito.length; j++) {
+      if (carrito[j].id === s.id) { enCarrito = true; break; }
+    }
+    var calavs = "";
+    for (var k = 0; k < 5; k++) {
+      calavs += "<span class=\"calavera " + (k < s.calaveras ? "on" : "") + "\">&#x1F480;</span>";
+    }
+    html += "<div class=\"salsa-card\" style=\"animation: fadeUp 0.5s ease " + (i * 0.1) + "s both\">";
+    html += "<div class=\"salsa-nombre\">" + s.nombre + "</div>";
+    html += "<div class=\"salsa-desc\">" + s.desc + "</div>";
+    html += "<div class=\"calaveras\">" + calavs + "<span class=\"calaveras-label\">" + s.calaveras + "/5 &#x1F480;</span></div>";
+    html += "<div class=\"salsa-footer\">";
+    html += "<div class=\"salsa-precio\">$" + s.precio + " <small>MXN</small></div>";
+    html += "<button class=\"agregar-btn " + (enCarrito ? "agregado" : "") + "\" style=\"position:relative;z-index:1\" onclick=\"toggleCarrito('" + s.id + "')\">";
+    html += enCarrito ? "&#x2713; Agregado" : "Agregar";
+    html += "</button></div></div>";
+  }
+  grid.innerHTML = html;
 }
 
 function toggleCarrito(id) {
-  const salsa = salsas.find(s => s.id === id);
-  const idx = carrito.findIndex(c => c.id === id);
+  var salsa = null;
+  for (var i = 0; i < salsas.length; i++) {
+    if (salsas[i].id === id) { salsa = salsas[i]; break; }
+  }
+  if (!salsa) return;
+  var idx = -1;
+  for (var j = 0; j < carrito.length; j++) {
+    if (carrito[j].id === id) { idx = j; break; }
+  }
   if (idx === -1) {
-    carrito.push({...salsa, cantidad: 1});
-    document.getElementById('modal-msg').textContent = `"${salsa.nombre}" fue agregada a tu carrito.`;
-    document.getElementById('modal').classList.add('open');
+    carrito.push({ id: salsa.id, nombre: salsa.nombre, precio: salsa.precio, cantidad: 1 });
+    sessionStorage.setItem("jami_carrito", JSON.stringify(carrito));
+    var msg = document.getElementById("modal-msg");
+    if (msg) msg.textContent = salsa.nombre + " fue agregada a tu carrito.";
+    var modal = document.getElementById("modal");
+    if (modal) modal.classList.add("open");
   } else {
     carrito.splice(idx, 1);
+    sessionStorage.setItem("jami_carrito", JSON.stringify(carrito));
   }
   renderSalsas();
   actualizarCarrito();
 }
 
 function actualizarCarrito() {
-  const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
-  const count = carrito.reduce((s, i) => s + i.cantidad, 0);
-  document.getElementById('carrito-items').textContent = `${count} producto(s)`;
-  document.getElementById('carrito-total').textContent = total;
-  document.getElementById('nav-count').textContent = count;
-  document.getElementById('nav-count').classList.toggle('visible', count > 0);
-  document.getElementById('carrito-bar').classList.toggle('visible', count > 0);
-
-  const resumen = carrito.map(i => `${i.nombre} x${i.cantidad} $${i.precio * i.cantidad}`).join(', ');
-  const msg = encodeURIComponent(`Hola! Quiero ordenar de Jam'i N'i:\n${resumen}\nTotal: $${total} MXN`);
-  document.getElementById('carrito-wa').href = `https://wa.me/5215610176064?text=${msg}`;
+  var total = 0;
+  var count = 0;
+  for (var i = 0; i < carrito.length; i++) {
+    total += carrito[i].precio * carrito[i].cantidad;
+    count += carrito[i].cantidad;
+  }
+  var el;
+  el = document.getElementById("carrito-items");
+  if (el) el.textContent = count + " producto(s)";
+  el = document.getElementById("carrito-total");
+  if (el) el.textContent = total;
+  el = document.getElementById("nav-count");
+  if (el) { el.textContent = count; el.classList.toggle("visible", count > 0); }
+  el = document.getElementById("carrito-bar");
+  if (el) el.classList.toggle("visible", count > 0);
 }
 
 function vaciarCarrito() {
   carrito = [];
+  sessionStorage.setItem("jami_carrito", JSON.stringify(carrito));
   renderSalsas();
   actualizarCarrito();
 }
 
 function verCarrito() {
   if (carrito.length === 0) {
-    alert('Tu carrito está vacío. ¡Agrega alguna salsa!');
+    alert("Tu carrito esta vacio. Agrega alguna salsa primero.");
     return;
   }
-  document.getElementById('carrito-bar').classList.add('visible');
-  document.getElementById('carrito-bar').scrollIntoView({behavior: 'smooth'});
+  window.location.href = "carrito.html";
 }
 
 function cerrarModal() {
-  document.getElementById('modal').classList.remove('open');
+  var modal = document.getElementById("modal");
+  if (modal) modal.classList.remove("open");
 }
 
-// Scroll reveal
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) e.target.classList.add("visible");
+  });
 }, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll(".reveal").forEach(function(el) { observer.observe(el); });
 
 renderSalsas();
+actualizarCarrito();
 </script>
 </body>
 </html>

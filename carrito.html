@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam'i N'i — Tu pedido</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro: #0a0a0a; --carbon: #111111; --grafito: #1a1a1a; --borde: #2a2a2a;
+  --oro: #c9a84c; --oro-claro: #e8c97a; --rojo-vivo: #c0392b;
+  --crema: #f5f0e8; --gris: #888; --gris-claro: #bbb;
+  --verde-mp: #009ee3;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--negro); color: var(--crema); font-family: var(--font-body); font-size: 17px; line-height: 1.7; min-height: 100vh; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(10,10,10,0.96); border-bottom: 1px solid var(--borde); }
+.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.15em; color: var(--oro); text-decoration: none; font-style: italic; display: flex; align-items: center; }
+.logo img { height: 36px; width: auto; object-fit: contain; }
+.nav-back { color: var(--gris); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: color 0.3s; }
+.nav-back:hover { color: var(--oro); }
+
+.page-wrap { max-width: 1100px; margin: 0 auto; padding: 120px 48px 80px; }
+.page-title { font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); font-weight: 400; margin-bottom: 8px; }
+.page-title em { font-style: italic; color: var(--oro); }
+.page-sub { color: var(--gris-claro); font-size: 16px; font-weight: 300; margin-bottom: 48px; }
+
+.carrito-layout { display: grid; grid-template-columns: 1fr 420px; gap: 32px; align-items: start; }
+
+/* PRODUCTOS */
+.section-label { font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 16px; display: block; }
+.productos-lista { display: flex; flex-direction: column; gap: 2px; margin-bottom: 24px; }
+.producto-item { background: var(--grafito); border: 1px solid var(--borde); padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+.producto-nombre { font-family: var(--font-display); font-size: 18px; font-weight: 400; flex: 1; }
+.producto-personalizado { font-size: 13px; color: var(--gris); margin-top: 2px; }
+.producto-precio { font-family: var(--font-display); font-size: 22px; color: var(--oro); min-width: 80px; text-align: right; }
+.producto-quitar { background: none; border: none; color: var(--gris); cursor: pointer; font-size: 18px; padding: 4px 8px; transition: color 0.2s; line-height: 1; }
+.producto-quitar:hover { color: var(--rojo-vivo); }
+.cantidad-wrap { display: flex; align-items: center; gap: 0; border: 1px solid var(--borde); }
+.cantidad-btn { background: none; border: none; color: var(--crema); cursor: pointer; width: 32px; height: 32px; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; line-height: 1; }
+.cantidad-btn:hover { background: var(--borde); }
+.cantidad-num { min-width: 32px; text-align: center; font-family: var(--font-display); font-size: 16px; color: var(--oro); padding: 0 4px; }
+
+.carrito-vacio { text-align: center; padding: 60px 24px; border: 1px dashed var(--borde); background: var(--grafito); }
+.carrito-vacio h3 { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 12px; color: var(--gris-claro); }
+.carrito-vacio p { color: var(--gris); margin-bottom: 24px; }
+.btn-volver { display: inline-block; padding: 13px 32px; background: var(--oro); color: var(--negro); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: background 0.3s; }
+.btn-volver:hover { background: var(--oro-claro); }
+
+/* FORMULARIO */
+.formulario { background: var(--grafito); border: 1px solid var(--borde); padding: 32px; }
+.form-titulo { font-family: var(--font-display); font-size: 22px; font-weight: 400; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--borde); }
+.form-grupo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-grupo label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
+.form-grupo input, .form-grupo select, .form-grupo textarea {
+  background: var(--negro); border: 1px solid var(--borde);
+  color: var(--crema); padding: 12px 16px;
+  font-family: var(--font-body); font-size: 16px;
+  outline: none; transition: border-color 0.3s;
+  width: 100%;
+}
+.form-grupo input:focus, .form-grupo select:focus, .form-grupo textarea:focus { border-color: var(--oro); }
+.form-grupo input::placeholder, .form-grupo textarea::placeholder { color: var(--gris); }
+.form-grupo select option { background: var(--grafito); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grupo textarea { resize: vertical; min-height: 80px; }
+
+.form-separador { height: 1px; background: var(--borde); margin: 20px 0; }
+
+/* RESUMEN */
+.resumen-wrap { background: var(--negro); border: 1px solid var(--borde); padding: 20px; margin-bottom: 20px; }
+.resumen-titulo { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 14px; }
+.resumen-linea { display: flex; justify-content: space-between; font-size: 15px; padding: 6px 0; border-bottom: 1px solid rgba(42,42,42,0.5); }
+.resumen-linea:last-of-type { border-bottom: none; }
+.resumen-linea span:last-child { color: var(--oro); font-family: var(--font-display); }
+.resumen-total-wrap { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--borde); }
+.resumen-total-label { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
+.resumen-total-num { font-family: var(--font-display); font-size: 32px; color: var(--oro); }
+
+/* ENVÍO INFO */
+.envio-info { background: rgba(201,168,76,0.06); border: 1px solid rgba(201,168,76,0.2); padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: var(--gris-claro); line-height: 1.6; }
+.envio-info strong { color: var(--oro); }
+
+/* BOTÓN MERCADO PAGO */
+.mp-btn {
+  width: 100%; padding: 18px;
+  background: var(--verde-mp); border: none;
+  color: white; font-family: var(--font-body);
+  font-size: 15px; letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; transition: opacity 0.3s, transform 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.mp-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.mp-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.mp-logo { font-size: 20px; }
+
+.mp-note { font-size: 12px; color: var(--gris); text-align: center; margin-top: 10px; line-height: 1.5; }
+
+/* ERRORES */
+.campo-error { border-color: var(--rojo-vivo) !important; }
+.error-msg { font-size: 12px; color: var(--rojo-vivo); margin-top: 4px; display: none; }
+.error-msg.visible { display: block; }
+
+/* MODAL CONFIRMACIÓN */
+.modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--grafito); border: 1px solid var(--borde); padding: 48px; max-width: 520px; width: 100%; text-align: center; transform: translateY(20px); transition: transform 0.3s; }
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-icon { font-size: 56px; margin-bottom: 16px; display: block; }
+.modal h3 { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--oro); margin-bottom: 10px; }
+.modal p { color: var(--gris-claro); margin-bottom: 8px; font-size: 16px; }
+.modal-detalle { background: var(--negro); padding: 14px 18px; border-left: 2px solid var(--rojo-vivo); text-align: left; margin: 16px 0 24px; font-size: 14px; color: var(--gris-claro); line-height: 1.9; }
+.modal-mp-btn { display: block; padding: 16px; background: var(--verde-mp); color: white; font-family: var(--font-body); font-size: 14px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; margin-bottom: 10px; transition: opacity 0.3s; }
+.modal-mp-btn:hover { opacity: 0.9; }
+.modal-close { padding: 12px 32px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; width: 100%; }
+
+@media (max-width: 900px) {
+  .carrito-layout { grid-template-columns: 1fr; }
+  .page-wrap { padding: 100px 24px 60px; }
+  nav { padding: 16px 20px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <img src="imagenes/logo.png" alt="Jam'i N'i">
+  </a>
+  <a href="index.html" class="nav-back">← Seguir comprando</a>
+</nav>
+
+<div class="page-wrap">
+  <h1 class="page-title">Tu <em>pedido</em></h1>
+  <p class="page-sub">Revisa tus productos, llena tus datos y paga con Mercado Pago.</p>
+
+  <div class="carrito-layout">
+
+    <!-- COLUMNA IZQUIERDA: productos + formulario -->
+    <div>
+      <span class="section-label">Productos seleccionados</span>
+      <div id="productos-lista"></div>
+
+      <!-- FORMULARIO -->
+      <div class="formulario" id="formulario-wrap" style="display:none">
+        <div class="form-titulo">Datos de envío</div>
+
+        <div class="form-grupo">
+          <label>Nombre completo *</label>
+          <input type="text" id="f-nombre" placeholder="Tu nombre completo">
+          <span class="error-msg" id="err-nombre">Por favor ingresa tu nombre</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-grupo">
+            <label>Teléfono *</label>
+            <input type="tel" id="f-telefono" placeholder="55 1234 5678">
+            <span class="error-msg" id="err-telefono">Ingresa tu teléfono</span>
+          </div>
+          <div class="form-grupo">
+            <label>Email *</label>
+            <input type="email" id="f-email" placeholder="tu@correo.com">
+            <span class="error-msg" id="err-email">Ingresa un email válido</span>
+          </div>
+        </div>
+
+        <div class="form-grupo">
+          <label>Calle y número *</label>
+          <input type="text" id="f-calle" placeholder="Ej: Av. Insurgentes 123, Depto 4">
+          <span class="error-msg" id="err-calle">Ingresa tu calle y número</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-grupo">
+            <label>Colonia *</label>
+            <input type="text" id="f-colonia" placeholder="Tu colonia">
+            <span class="error-msg" id="err-colonia">Ingresa tu colonia</span>
+          </div>
+          <div class="form-grupo">
+            <label>Código Postal *</label>
+            <input type="text" id="f-cp" placeholder="00000" maxlength="5">
+            <span class="error-msg" id="err-cp">Ingresa tu CP</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-grupo">
+            <label>Ciudad *</label>
+            <input type="text" id="f-ciudad" placeholder="Tu ciudad">
+            <span class="error-msg" id="err-ciudad">Ingresa tu ciudad</span>
+          </div>
+          <div class="form-grupo">
+            <label>Estado *</label>
+            <select id="f-estado">
+              <option value="">Selecciona...</option>
+              <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
+              <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
+              <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
+              <option>Durango</option><option>Estado de México</option><option>Guanajuato</option>
+              <option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option>
+              <option>Michoacán</option><option>Morelos</option><option>Nayarit</option>
+              <option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option>
+              <option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option>
+              <option>Sinaloa</option><option>Sonora</option><option>Tabasco</option>
+              <option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option>
+              <option>Yucatán</option><option>Zacatecas</option>
+            </select>
+            <span class="error-msg" id="err-estado">Selecciona tu estado</span>
+          </div>
+        </div>
+
+        <div class="form-grupo">
+          <label>Referencias de entrega</label>
+          <textarea id="f-referencias" placeholder="Ej: Entre calles, color de fachada, instrucciones para el repartidor..."></textarea>
+        </div>
+
+        <div class="form-grupo">
+          <label>Notas del pedido</label>
+          <textarea id="f-notas" placeholder="Ej: Alergias, preferencias especiales, dedicatoria..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: resumen + pago -->
+    <div id="resumen-wrap" style="display:none">
+      <span class="section-label">Resumen del pedido</span>
+
+      <div class="resumen-wrap" id="resumen-productos"></div>
+
+      <div class="envio-info">
+        <strong>Envío a toda la República Mexicana.</strong> El costo de envío se coordina contigo después de recibir tu pedido según tu ubicación.
+      </div>
+
+      <button class="mp-btn" id="mp-btn" onclick="procesarPedido()">
+        <span class="mp-logo">💳</span>
+        Pagar con Mercado Pago
+      </button>
+      <p class="mp-note">Al continuar serás redirigido a Mercado Pago para completar tu pago de forma segura.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <span class="modal-icon">🌶️</span>
+    <h3>¡Pedido recibido!</h3>
+    <p>Tu pedido ha sido registrado. Haz clic abajo para completar tu pago.</p>
+    <div class="modal-detalle" id="modal-detalle"></div>
+    <a class="modal-mp-btn" id="modal-mp-link" href="https://link.mercadopago.com.mx/jamini" target="_blank">
+      💳 Ir a Mercado Pago
+    </a>
+
+    <button class="modal-close" onclick="cerrarModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+// Leer carrito del localStorage o del sessionStorage
+let carrito = JSON.parse(sessionStorage.getItem('jami_carrito') || '[]');
+
+function renderProductos() {
+  var lista = document.getElementById("productos-lista");
+  var formulario = document.getElementById("formulario-wrap");
+  var resumenWrap = document.getElementById("resumen-wrap");
+
+  if (carrito.length === 0) {
+    lista.innerHTML = "<div class=\"carrito-vacio\"><h3>Tu carrito está vacío</h3><p>Agrega algunas salsas para continuar con tu pedido.</p><a href=\"index.html\" class=\"btn-volver\">Ver salsas</a></div>";
+    formulario.style.display = "none";
+    resumenWrap.style.display = "none";
+    return;
+  }
+
+  var html = "<div class=\"productos-lista\">";
+  for (var i = 0; i < carrito.length; i++) {
+    var item = carrito[i];
+    var subtotal = item.precio * item.cantidad;
+    html += "<div class=\"producto-item\">";
+    html += "<div style=\"flex:1\">";
+    html += "<div class=\"producto-nombre\">" + item.nombre + "</div>";
+    if (item.nombrePersonalizado) html += "<div class=\"producto-personalizado\">Nombre: " + item.nombrePersonalizado + "</div>";
+    if (item.chiles) html += "<div class=\"producto-personalizado\">Chiles: " + item.chiles + "</div>";
+    if (item.extras) html += "<div class=\"producto-personalizado\">Extras: " + item.extras + "</div>";
+    html += "<div class=\"producto-personalizado\" style=\"color:var(--gris)\">$" + item.precio + " c/u</div>";
+    html += "</div>";
+    html += "<div class=\"cantidad-wrap\">";
+    html += "<button class=\"cantidad-btn\" onclick=\"cambiarCantidad(" + i + ", -1)\">&#8722;</button>";
+    html += "<span class=\"cantidad-num\">" + item.cantidad + "</span>";
+    html += "<button class=\"cantidad-btn\" onclick=\"cambiarCantidad(" + i + ", 1)\">&#43;</button>";
+    html += "</div>";
+    html += "<div class=\"producto-precio\" style=\"min-width:90px;text-align:right\">$" + subtotal + " <span style=\"font-size:13px;color:var(--gris);font-family:var(--font-body)\">MXN</span></div>";
+    html += "<button class=\"producto-quitar\" onclick=\"quitarProducto(" + i + ")\">&#x2715;</button>";
+    html += "</div>";
+  }
+  html += "</div>";
+  lista.innerHTML = html;
+
+  formulario.style.display = "block";
+  resumenWrap.style.display = "block";
+  renderResumen();
+}
+
+function renderResumen() {
+  var total = 0;
+  for (var i = 0; i < carrito.length; i++) {
+    total += carrito[i].precio * (carrito[i].cantidad || 1);
+  }
+  var html = "";
+  for (var i = 0; i < carrito.length; i++) {
+    var item = carrito[i];
+    var subtotal = item.precio * (item.cantidad || 1);
+    var label = item.cantidad > 1 ? item.nombre + " x" + item.cantidad : item.nombre;
+    html += "<div class=\"resumen-linea\"><span>" + label + "</span><span>$" + subtotal + "</span></div>";
+  }
+  html += "<div class=\"resumen-total-wrap\"><span class=\"resumen-total-label\">Total</span><span class=\"resumen-total-num\">$" + total + " MXN</span></div>";
+  document.getElementById("resumen-productos").innerHTML = html;
+}
+
+function quitarProducto(idx) {
+  carrito.splice(idx, 1);
+  sessionStorage.setItem("jami_carrito", JSON.stringify(carrito));
+  renderProductos();
+}
+
+function cambiarCantidad(idx, delta) {
+  carrito[idx].cantidad = (carrito[idx].cantidad || 1) + delta;
+  if (carrito[idx].cantidad < 1) carrito[idx].cantidad = 1;
+  if (carrito[idx].cantidad > 20) carrito[idx].cantidad = 20;
+  sessionStorage.setItem("jami_carrito", JSON.stringify(carrito));
+  renderProductos();
+}
+
+function validarFormulario() {
+  const campos = [
+    { id: 'f-nombre', err: 'err-nombre', check: v => v.trim().length > 2 },
+    { id: 'f-telefono', err: 'err-telefono', check: v => v.replace(/\D/g,'').length >= 10 },
+    { id: 'f-email', err: 'err-email', check: v => v.includes('@') && v.includes('.') },
+    { id: 'f-calle', err: 'err-calle', check: v => v.trim().length > 3 },
+    { id: 'f-colonia', err: 'err-colonia', check: v => v.trim().length > 2 },
+    { id: 'f-cp', err: 'err-cp', check: v => v.replace(/\D/g,'').length === 5 },
+    { id: 'f-ciudad', err: 'err-ciudad', check: v => v.trim().length > 2 },
+    { id: 'f-estado', err: 'err-estado', check: v => v !== '' },
+  ];
+
+  let valido = true;
+  campos.forEach(({ id, err, check }) => {
+    const el = document.getElementById(id);
+    const errEl = document.getElementById(err);
+    const ok = check(el.value);
+    el.classList.toggle('campo-error', !ok);
+    errEl.classList.toggle('visible', !ok);
+    if (!ok) valido = false;
+  });
+  return valido;
+}
+
+function procesarPedido() {
+  if (!validarFormulario()) {
+    document.querySelector(".campo-error").scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  var nombre = document.getElementById("f-nombre").value;
+  var telefono = document.getElementById("f-telefono").value;
+  var email = document.getElementById("f-email").value;
+  var calle = document.getElementById("f-calle").value;
+  var colonia = document.getElementById("f-colonia").value;
+  var cp = document.getElementById("f-cp").value;
+  var ciudad = document.getElementById("f-ciudad").value;
+  var estado = document.getElementById("f-estado").value;
+  var referencias = document.getElementById("f-referencias").value;
+  var notas = document.getElementById("f-notas").value;
+  var total = carrito.reduce(function(s, i) { return s + i.precio * (i.cantidad || 1); }, 0);
+
+  var btn = document.getElementById("mp-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="mp-logo">⏳</span> Procesando...';
+
+  var pedidoData = {
+    nombre: nombre, email: email, telefono: telefono,
+    calle: calle, colonia: colonia, cp: cp,
+    ciudad: ciudad, estado: estado,
+    referencias: referencias, notas: notas,
+    total: total
+  };
+  sessionStorage.setItem("jami_pedido", JSON.stringify(pedidoData));
+
+  fetch("/api/crear-pago", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: carrito.map(function(i) {
+        return { nombre: i.nombre, precio: i.precio, cantidad: i.cantidad || 1 };
+      }),
+      payer: {
+        nombre: nombre, email: email, telefono: telefono,
+        calle: calle, colonia: colonia, cp: cp,
+        ciudad: ciudad, estado: estado
+      }
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.init_point) {
+      window.location.href = data.init_point;
+    } else {
+      alert("Error al crear el pago. Intenta de nuevo.");
+      btn.disabled = false;
+      btn.innerHTML = '<span class="mp-logo">💳</span> Pagar con Mercado Pago';
+    }
+  })
+  .catch(function(err) {
+    console.error(err);
+    alert("Error de conexion. Intenta de nuevo.");
+    btn.disabled = false;
+    btn.innerHTML = '<span class="mp-logo">💳</span> Pagar con Mercado Pago';
+  });
+}
+
+function cerrarModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// INIT
+renderProductos();
+
+// Limpiar carrito al ir a MP
+document.getElementById('modal-mp-link').addEventListener('click', () => {
+  sessionStorage.removeItem('jami_carrito');
+});
+</script>
+</body>
+</html>
