@@ -218,11 +218,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 
 <script>
 const chiles = [
-  { id: 'ancho', icon: '🌶️', nombre: 'Ancho', desc: 'Suave, terroso y ligeramente dulce' },
-  { id: 'guajillo', icon: '🫑', nombre: 'Guajillo', desc: 'Frutal con notas de cereza y tanino' },
-  { id: 'morita', icon: '🍒', nombre: 'Morita', desc: 'Ahumado intenso y sabor complejo' },
-  { id: 'arbol', icon: '🔥', nombre: 'De árbol', desc: 'Picante brillante con sabor vegetal' },
-  { id: 'habanero', icon: '⚡', nombre: 'Habanero tatemado', desc: 'Frutal y devastadoramente picante' },
+  { id: 'ancho', icon: '🌶️', nombre: 'Ancho', desc: 'Suave, terroso y ligeramente dulce' , imagen:"imagenes/ancho.png" },
+  { id: 'guajillo', icon: '🫑', nombre: 'Guajillo', desc: 'Frutal con notas de cereza y tanino' , imagen: "imagenes/guajillo.png" },
+  { id: 'morita', icon: '🍒', nombre: 'Morita', desc: 'Ahumado intenso y sabor complejo' , imagen: "imagenes/morita.png"},
+  { id: 'arbol', icon: '🔥', nombre: 'De árbol', desc: 'Picante brillante con sabor vegetal' , imagen: "imagenes/arbol.png" },
+  { id: 'habanero', icon: '⚡', nombre: 'Habanero tatemado', desc: 'Frutal y devastadoramente picante' , imagen: "imagenes/habanero.png"},
 ];
 const extras = [
   { id: 'cacahuate', icon: '🥜', nombre: 'Cacahuate', desc: 'Clásico y crujiente' },
@@ -242,7 +242,7 @@ function renderChiles() {
     const sel = estado.chiles.includes(c.id);
     const dis = !sel && estado.chiles.length >= 2;
     return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleChile(\''+c.id+'\')'}">
-      <span class="opcion-icon">${c.icon}</span><div class="opcion-name">${c.nombre}</div><div class="opcion-desc">${c.desc}</div></div>`;
+      ${c.imagen ? `<div style="width:100%;height:130px;overflow:hidden;margin-bottom:10px;"><img src="${c.imagen}" alt="${c.nombre}" style="width:100%;height:100%;object-fit:cover;"></div>` : `<span class="opcion-icon">${c.icon}</span>`}<div class="opcion-name">${c.nombre}</div><div class="opcion-desc">${c.desc}</div></div>`;
   }).join('');
   document.getElementById('btn-next-0').disabled = estado.chiles.length === 0;
 }
