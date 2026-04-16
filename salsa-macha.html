@@ -242,7 +242,7 @@ function renderChiles() {
     const sel = estado.chiles.includes(c.id);
     const dis = !sel && estado.chiles.length >= 2;
     return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleChile(\''+c.id+'\')'}">
-      ${c.imagen ? `<div style="width:100%;height:130px;overflow:hidden;margin-bottom:10px;"><img src="${c.imagen}" alt="${c.nombre}" style="width:100%;height:100%;object-fit:cover;"></div>` : `<span class="opcion-icon">${c.icon}</span>`}<div class="opcion-name">${c.nombre}</div><div class="opcion-desc">${c.desc}</div></div>`;
+      ${c.imagen ? `<div style="width:100%;height:80px;overflow:hidden;margin-bottom:10px;"><img src="${c.imagen}" alt="${c.nombre}" style="width:100%;height:100%;object-fit:contain;object-position:center center;"></div>` : `<span class="opcion-icon">${c.icon}</span>`}<div class="opcion-name">${c.nombre}</div><div class="opcion-desc">${c.desc}</div></div>`;
   }).join('');
   document.getElementById('btn-next-0').disabled = estado.chiles.length === 0;
 }
