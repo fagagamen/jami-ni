@@ -17,21 +17,30 @@
 html { scroll-behavior: smooth; }
 body { background: var(--negro); color: var(--crema); font-family: var(--font-body); font-size: 17px; line-height: 1.7; min-height: 100vh; }
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(10,10,10,0.96); border-bottom: 1px solid var(--borde); }
-.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: 0.15em; color: var(--oro); text-decoration: none; font-style: italic; }
+.logo {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+.logo img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
 .nav-back { color: var(--gris); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: color 0.3s; }
 .nav-back:hover { color: var(--oro); }
 .page-hero { padding: 120px 48px 56px; text-align: center; background: radial-gradient(ellipse at 50% 80%, rgba(139,26,26,0.1) 0%, transparent 60%), var(--negro); position: relative; overflow: hidden; }
 .page-hero::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px), repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px); pointer-events: none; }
-.hero-tag { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 18px; display: block; }
+.hero-tag { font-size: 18px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 18px; display: block; }
 .page-hero h1 { font-family: var(--font-display); font-size: clamp(40px, 6vw, 76px); font-weight: 400; line-height: 1.05; margin-bottom: 14px; }
 .page-hero h1 em { font-style: italic; color: var(--rojo-vivo); }
-.page-hero p { font-size: 18px; color: var(--gris-claro); font-weight: 300; max-width: 480px; margin: 0 auto; }
+.page-hero p { font-size: 20px; color: var(--gris-claro); font-weight: 300; max-width: 480px; margin: 0 auto; }
 .progress-wrap { padding: 0 48px; max-width: 860px; margin: 0 auto; position: sticky; top: 61px; z-index: 50; background: var(--negro); border-bottom: 1px solid var(--borde); }
 .steps-bar { display: flex; padding: 14px 0; gap: 0; overflow-x: auto; scrollbar-width: none; }
 .steps-bar::-webkit-scrollbar { display: none; }
 .step-item { display: flex; align-items: center; gap: 8px; flex-shrink: 0; cursor: pointer; padding: 4px 14px 4px 0; }
 .step-item:first-child { padding-left: 0; }
-.step-num { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--borde); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gris); transition: all 0.3s; flex-shrink: 0; font-family: var(--font-body); }
+.step-num { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--borde); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--gris); transition: all 0.3s; flex-shrink: 0; font-family: var(--font-body); }
 .step-label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gris); transition: color 0.3s; white-space: nowrap; }
 .step-arrow { color: var(--borde); font-size: 11px; margin-left: 4px; }
 .step-item.active .step-num { background: var(--rojo-vivo); border-color: var(--rojo-vivo); color: white; font-weight: 700; }
@@ -46,7 +55,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 @keyframes fadeStep { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
 .step-title { font-family: var(--font-display); font-size: 30px; font-weight: 400; margin-bottom: 6px; }
 .step-title em { font-style: italic; color: var(--oro); }
-.step-subtitle { color: var(--gris-claro); font-size: 16px; margin-bottom: 24px; font-weight: 300; }
+.step-subtitle { color: var(--gris-claro); font-size: 18px; margin-bottom: 24px; font-weight: 300; }
 .step-limit { display: inline-block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rojo-vivo); background: rgba(192,57,43,0.1); padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(192,57,43,0.2); }
 .opciones-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; margin-bottom: 36px; }
 .opcion-card { border: 1px solid var(--borde); background: var(--grafito); padding: 20px 16px; cursor: pointer; transition: border-color 0.25s, transform 0.2s; position: relative; overflow: hidden; user-select: none; }
@@ -56,7 +65,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .opcion-card.disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
 .opcion-icon { font-size: 28px; margin-bottom: 10px; display: block; line-height: 1; }
 .opcion-name { font-family: var(--font-display); font-size: 16px; font-weight: 400; margin-bottom: 4px; }
-.opcion-desc { font-size: 12px; color: var(--gris); font-weight: 300; line-height: 1.5; }
+.opcion-desc { font-size: 15px; color: var(--gris); font-weight: 300; line-height: 1.5; }
 .nombre-wrap { margin-bottom: 36px; }
 .nombre-label { font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 10px; display: block; }
 .nombre-input { width: 100%; background: var(--grafito); border: 1px solid var(--borde); color: var(--crema); padding: 16px 20px; font-family: var(--font-display); font-size: 22px; outline: none; transition: border-color 0.3s; font-style: italic; }
@@ -89,7 +98,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .modal-overlay.open .modal { transform: translateY(0); }
 .modal-icon { font-size: 56px; margin-bottom: 16px; display: block; }
 .modal h3 { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--oro); margin-bottom: 10px; }
-.modal p { color: var(--gris-claro); margin-bottom: 12px; font-size: 16px; }
+.modal p { color: var(--gris-claro); margin-bottom: 12px; font-size: 18px; }
 .modal-detail { background: var(--negro); padding: 14px 18px; border-left: 2px solid var(--rojo-vivo); text-align: left; margin-bottom: 24px; font-size: 14px; color: var(--gris-claro); line-height: 1.9; }
 .modal-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .modal-wa { display: inline-block; padding: 13px 28px; background: #25D366; color: white; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: opacity 0.3s; }
@@ -105,14 +114,17 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 </head>
 <body>
 <nav>
-  <a href="index.html" class="logo">Jam'i N'i</a>
+  <a href="index.html" class="logo">
+    <img src="imagenes/logo.png" alt="Jam'i Ni"/>
+  </a>
   <a href="index.html" class="nav-back">← Ver salsas de línea</a>
 </nav>
 
 <section class="page-hero">
   <span class="hero-tag">Edición personalizada · $190 MXN</span>
   <h1>Crea tu<br><em>Salsa Macha</em></h1>
-  <p>Elige tus chiles, ingredientes y ponle tu nombre. Tu salsa, tu identidad.</p>
+  <p>Elige tus chiles, ingredientes y ponle tu nombre. </p>
+  <p>Tu salsa, tu identidad.</p>
 </section>
 
 <div class="progress-wrap">
@@ -152,11 +164,11 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 
   <!-- PASO 3 -->
   <div class="step-panel" id="paso-2">
-    <div class="step-title">Ponle <em>nombre</em></div>
+    <div class="step-title">Hazla <em>tuya</em></div>
     <p class="step-subtitle">Dale una identidad única a tu salsa. Este nombre aparecerá en la etiqueta de tu frasco.</p>
     <div class="nombre-wrap">
       <label class="nombre-label" for="nombre-salsa">Nombre de tu salsa</label>
-      <input type="text" id="nombre-salsa" class="nombre-input" placeholder="Ej: La Macha de Juan..." maxlength="30" oninput="actualizarNombre()">
+      <input type="text" id="nombre-salsa" class="nombre-input" placeholder="Ej: Chiquita pero picosa..." maxlength="30" oninput="actualizarNombre()">
       <p class="nombre-hint">Máximo 30 caracteres · Aparecerá impreso en tu etiqueta personalizada</p>
     </div>
     <div class="nav-steps">
@@ -188,7 +200,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
     <div class="resumen-card" id="resumen-card"></div>
     <div class="nav-steps">
       <button class="btn-prev" onclick="anterior()">← Atrás</button>
-      <button class="btn-next gold" onclick="ordenar()">Pedir por WhatsApp 🌶️</button>
+      <button class="btn-next gold" onclick="ordenar()">Pagar 🌶️</button>
     </div>
   </div>
 </div>

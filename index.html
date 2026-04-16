@@ -28,18 +28,35 @@ body { background: var(--negro); color: var(--crema); font-family: var(--font-bo
 /* NAV */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   padding: 20px 48px;
   background: rgba(10,10,10,0.96);
   border-bottom: 1px solid var(--borde);
 }
 .logo {
-  font-family: var(--font-display);
-  font-size: 22px; letter-spacing: 0.15em;
-  color: var(--oro); text-decoration: none;
-  font-style: italic;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
-.nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+.logo img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  list-style: none;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.nav-links { display: flex; gap: 20px; list-style: none; align-items: center; flex-wrap: nowrap; }
 .nav-links a { color: var(--gris-claro); text-decoration: none; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; transition: color 0.3s; }
 .nav-links a:hover { color: var(--oro); }
 .nav-cta { background: var(--oro) !important; color: var(--negro) !important; padding: 8px 20px !important; font-weight: 500 !important; transition: background 0.3s !important; }
@@ -66,7 +83,7 @@ nav {
     repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(201,168,76,0.03) 60px);
   pointer-events: none;
 }
-.hero-tag { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 24px; display: block; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
+.hero-tag { font-size: 20px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 24px; display: block; opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards; }
 .hero h1 { font-family: var(--font-display); font-size: clamp(56px, 10vw, 120px); font-weight: 400; line-height: 0.95; letter-spacing: -0.01em; margin-bottom: 20px; opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards; }
 .hero h1 em { font-style: italic; color: var(--oro); display: block; }
 .hero-sub { font-size: 20px; font-weight: 300; color: var(--gris-claro); max-width: 480px; margin: 0 auto 48px; opacity: 0; animation: fadeUp 0.9s ease 0.6s forwards; }
@@ -75,7 +92,7 @@ nav {
 .btn-primary:hover { background: var(--oro-claro); transform: translateY(-2px); }
 .btn-outline { padding: 16px 44px; background: transparent; color: var(--crema); font-family: var(--font-body); font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid var(--borde); cursor: pointer; transition: border-color 0.3s, color 0.3s, transform 0.2s; text-decoration: none; display: inline-block; }
 .btn-outline:hover { border-color: var(--oro); color: var(--oro); transform: translateY(-2px); }
-.scroll-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s ease 1.2s forwards; }
+.scroll-hint { position: absolute; bottom: 3%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 1s ease 1.2s forwards; }
 .scroll-hint span { font-size: 10px; letter-spacing: 0.3em; color: var(--gris); text-transform: uppercase; }
 .scroll-hint::after { content: ''; display: block; width: 1px; height: 48px; background: linear-gradient(to bottom, var(--oro), transparent); }
 
@@ -97,7 +114,7 @@ nav {
 /* SALSAS */
 .salsas-section { padding: 80px 48px 100px; background: var(--carbon); }
 .section-header { text-align: center; margin-bottom: 56px; }
-.section-tag { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 14px; display: block; }
+.section-tag { font-size: 18px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--rojo-vivo); margin-bottom: 14px; display: block; }
 .section-header h2 { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); font-weight: 400; }
 .salsas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2px; max-width: 1100px; margin: 0 auto 48px; }
 .salsa-card { background: var(--grafito); padding: 36px 28px; border: 1px solid var(--borde); transition: border-color 0.3s, transform 0.3s; position: relative; overflow: hidden; cursor: pointer; }
@@ -105,7 +122,7 @@ nav {
 .salsa-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-4px); }
 .salsa-card:hover::before { opacity: 1; }
 .salsa-nombre { font-family: var(--font-display); font-size: 24px; font-weight: 400; margin-bottom: 8px; line-height: 1.2; }
-.salsa-desc { font-size: 15px; color: var(--gris-claro); font-weight: 300; margin-bottom: 20px; line-height: 1.6; }
+.salsa-desc { font-size: 18px; color: var(--gris-claro); font-weight: 300; margin-bottom: 20px; line-height: 1.6; }
 .calaveras { display: flex; gap: 4px; margin-bottom: 20px; align-items: center; }
 .calavera { font-size: 16px; filter: grayscale(1) brightness(0.4); transition: filter 0.2s; }
 .calavera.on { filter: none; }
@@ -119,15 +136,15 @@ nav {
 .personaliza-banner { max-width: 1100px; margin: 0 auto; background: var(--grafito); border: 1px solid var(--borde); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .personaliza-banner h3 { font-family: var(--font-display); font-size: 28px; font-weight: 400; }
 .personaliza-banner h3 em { font-style: italic; color: var(--rojo-vivo); }
-.personaliza-banner p { font-size: 16px; color: var(--gris-claro); font-weight: 300; margin-top: 6px; }
+.personaliza-banner p { font-size: 18px; color: var(--gris-claro); font-weight: 300; margin-top: 6px; }
 
 /* PROCESO */
 .proceso { padding: 100px 48px; max-width: 1100px; margin: 0 auto; }
 .proceso-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 56px; }
 .proceso-item { text-align: center; }
 .proceso-num { font-family: var(--font-display); font-size: 56px; color: var(--borde); margin-bottom: 16px; line-height: 1; }
-.proceso-item h3 { font-family: var(--font-display); font-size: 20px; font-weight: 400; margin-bottom: 10px; }
-.proceso-item p { font-size: 15px; color: var(--gris); font-weight: 300; line-height: 1.7; }
+.proceso-item h3 { font-family: var(--font-display); font-size: 30px; font-weight: 400; margin-bottom: 10px; }
+.proceso-item p { font-size: 18px; color: var(--gris); font-weight: 300; line-height: 1.7; }
 
 /* ENVÍOS */
 .envios { padding: 80px 48px; background: var(--carbon); }
@@ -135,7 +152,7 @@ nav {
 .envio-card { border: 1px solid var(--borde); background: var(--grafito); padding: 32px 24px; text-align: center; }
 .envio-icon { font-size: 32px; margin-bottom: 16px; display: block; }
 .envio-card h3 { font-family: var(--font-display); font-size: 20px; font-weight: 400; margin-bottom: 8px; }
-.envio-card p { font-size: 14px; color: var(--gris); font-weight: 300; line-height: 1.6; }
+.envio-card p { font-size: 18px; color: var(--gris); font-weight: 300; line-height: 1.6; }
 
 /* CTA FINAL */
 .cta-section { padding: 100px 48px; text-align: center; background: radial-gradient(ellipse at center, rgba(139,26,26,0.1), transparent 60%), var(--negro); }
@@ -147,7 +164,7 @@ nav {
 
 /* FOOTER */
 footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-.footer-logo { font-family: var(--font-display); font-size: 20px; color: var(--oro); font-style: italic; }
+.footer-logo { position:fixed; height: 10px; width: auto; object-fit: contain; } 
 .footer-info { font-size: 13px; color: var(--gris); }
 .footer-links { display: flex; gap: 24px; list-style: none; }
 .footer-links a { color: var(--gris); text-decoration: none; font-size: 13px; transition: color 0.3s; }
@@ -203,13 +220,15 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="logo">Jam'i N'i</a>
+  <a href="index.html" class="logo">
+    <img src="imagenes/logo.png" alt="Jam'i ni"/>
+  </a>
   <ul class="nav-links">
     <li><a href="#salsas">Salsas</a></li>
     <li><a href="#envios">Envíos</a></li>
     <li><a href="#contacto">Contacto</a></li>
     <li><span class="carrito-nav" onclick="verCarrito()">🛒 Carrito <span class="carrito-count" id="nav-count">0</span></span></li>
-    <li><a href="salsa-macha.html" class="nav-cta">Personaliza tu salsa</a></li>
+    <li><a href="salsa-macha.html" class="nav-cta">Laboratorio de salsa</a></li>
   </ul>
 </nav>
 
@@ -217,12 +236,12 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 <section class="hero">
   <span class="hero-tag">Salsa Macha Artesanal · CDMX</span>
   <h1>Jam'i N'i<em>Sabor que despierta</em></h1>
-  <p class="hero-sub">Salsa macha artesanal elaborada con chiles seleccionados, ingredientes premium y mucho amor desde Ciudad de México.</p>
+  <p class="hero-sub">Elaborado con mucho amor desde Ciudad de México, con la mejor variedad de chiles e ingredientes premium.</p>
   <div class="hero-cta">
     <a href="#salsas" class="btn-primary">Ver salsas</a>
-    <a href="salsa-macha.html" class="btn-outline">Crea la tuya</a>
+    <a href="salsa-macha.html" class="btn-outline">Crea tu salsa</a>
   </div>
-  <div class="scroll-hint"><span>Scroll</span></div>
+  <div class="scroll-hint"><span>Continua</span></div>
 </section>
 
 <!-- SOBRE -->
@@ -231,7 +250,7 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
     <div class="sobre-text">
       <h2>Artesanal desde el<br><em>primer chile</em></h2>
       <p>En Jam'i N'i cada frasco es elaborado a mano con ingredientes cuidadosamente seleccionados. No usamos conservadores artificiales — solo tradición, técnica y los mejores chiles de México.</p>
-      <p>Enviamos a toda la República Mexicana para que el sabor llegue a donde estés.</p>
+      <p>Enviamos a toda la República Mexicana para que el sabor llegue a donde estes.</p>
     </div>
     <div class="sobre-visual">
       <div class="sobre-icon">🌶️</div>
@@ -245,16 +264,16 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 <!-- SALSAS DE LÍNEA -->
 <section class="salsas-section" id="salsas">
   <div class="section-header reveal">
-    <span class="section-tag">Salsas de línea</span>
-    <h2>Ediciones permanentes</h2>
+    <span class="section-tag">Ediciones permanentes</span>
+    <h2>Salsas de línea</h2>
   </div>
   <div class="salsas-grid" id="salsas-grid"></div>
 
   <!-- BANNER PERSONALIZADA -->
   <div class="personaliza-banner reveal">
     <div>
-      <h3>Crea tu propia<br><em>Salsa Macha</em></h3>
-      <p>Elige tus chiles, ingredientes y ponle tu nombre — $190</p>
+      <h3>Laboratorio de<br><em>Salsa Macha</em></h3>
+      <p>Personaliza tus chiles e ingredientes y dale un nombre único </p>
     </div>
     <a href="salsa-macha.html" class="btn-primary">Personalizar ahora →</a>
   </div>
@@ -263,19 +282,19 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 <!-- PROCESO -->
 <section class="proceso reveal">
   <div class="section-header">
-    <span class="section-tag">Cómo funciona</span>
-    <h2>Simple y directo</h2>
+    <span class="section-tag">¿Cómo pido en línea?</span>
+    <h2>¡Muy fácil!</h2>
   </div>
   <div class="proceso-grid">
     <div class="proceso-item">
       <div class="proceso-num">01</div>
       <h3>Elige tu salsa</h3>
-      <p>Selecciona de nuestra línea permanente o personaliza la tuya desde cero con los ingredientes que más te gusten.</p>
+      <p>Selecciona de nuestra edición permanente o personaliza la tuya desde cero, con los ingredientes que más te gusten.</p>
     </div>
     <div class="proceso-item">
       <div class="proceso-num">02</div>
       <h3>Haz tu pedido</h3>
-      <p>Agrega al carrito y contáctanos por WhatsApp o directamente en la página. Te confirmamos disponibilidad al momento.</p>
+      <p>Agrega al carrito y realiza tu pago.</p>
     </div>
     <div class="proceso-item">
       <div class="proceso-num">03</div>
@@ -296,11 +315,11 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
     <div class="envio-card">
       <span class="envio-icon">💳</span>
       <h3>Pago seguro</h3>
-      <p>Aceptamos transferencia bancaria, Mercado Pago y efectivo en CDMX.</p>
+      <p>Aceptamos pago con tarjeta de crédito o débito y Mercado Pago.</p>
     </div>
     <div class="envio-card">
       <span class="envio-icon">🌶️</span>
-      <h3>Empaque cuidado</h3>
+      <h3>Empaque seguro</h3>
       <p>Cada frasco sale protegido y sellado para garantizar que llegue en perfectas condiciones.</p>
     </div>
   </div>
@@ -317,7 +336,9 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Jam'i N'i</div>
+  <div class="footer-logo">
+    <img src="imagenes/logo.png" alt="Jam'i Ni" />
+  </div>
   <div class="footer-info">CDMX · WhatsApp: 56 1017 6064</div>
   <ul class="footer-links">
     <li><a href="#salsas">Salsas</a></li>
@@ -357,15 +378,15 @@ const salsas = [
     precio: 125,
     tag: 'Suave'
   },
-  {
-    id: 'calavera',
-    nombre: 'Calavera',
-    desc: 'Mezcla intensa de chiles con ajonjolí y pepita. Sabores ahumados profundos que te dejan sin palabras.',
-    calaveras: 5,
+    {
+    id: 'italiana',
+    nombre: 'Italiana',
+    desc: 'Chile quebrado con mezcla de ajo y especias seleccionadas. Un perfil aromático único con inspiración mediterránea.',
+    calaveras: 2,
     precio: 125,
-    tag: 'Muy picosa'
+    tag: 'Leve-media'
   },
-  {
+    {
     id: 'clasica',
     nombre: 'Clásica',
     desc: 'Mezcla de chiles con cacahuate y un toque ligeramente dulce. El equilibrio perfecto entre sabor y picor.',
@@ -374,12 +395,12 @@ const salsas = [
     tag: 'Media'
   },
   {
-    id: 'italiana',
-    nombre: 'Italiana',
-    desc: 'Chile quebrado con mezcla de ajo y especias seleccionadas. Un perfil aromático único con inspiración mediterránea.',
-    calaveras: 2,
+    id: 'calavera',
+    nombre: 'Calavera',
+    desc: 'Mezcla intensa de chiles con ajonjolí y pepita. Sabores ahumados profundos que te dejan sin palabras.',
+    calaveras: 5,
     precio: 125,
-    tag: 'Leve-media'
+    tag: 'Muy picosa'
   }
 ];
 
