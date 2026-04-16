@@ -101,8 +101,6 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .modal p { color: var(--gris-claro); margin-bottom: 12px; font-size: 18px; }
 .modal-detail { background: var(--negro); padding: 14px 18px; border-left: 2px solid var(--rojo-vivo); text-align: left; margin-bottom: 24px; font-size: 14px; color: var(--gris-claro); line-height: 1.9; }
 .modal-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.modal-wa { display: inline-block; padding: 13px 28px; background: #25D366; color: white; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: opacity 0.3s; }
-.modal-wa:hover { opacity: 0.9; }
 .modal-close { padding: 13px 28px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; }
 @media (max-width: 768px) {
   nav { padding: 16px 20px; }
@@ -200,7 +198,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
     <div class="resumen-card" id="resumen-card"></div>
     <div class="nav-steps">
       <button class="btn-prev" onclick="anterior()">← Atrás</button>
-      <button class="btn-next gold" onclick="ordenar()">Pedir por WhatsApp 🌶️</button>
+      <button class="btn-next gold" onclick="ordenar()">Ir al Carrito 🌶️</button>
     </div>
   </div>
 </div>
@@ -209,10 +207,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
   <div class="modal">
     <span class="modal-icon">🌶️</span>
     <h3>¡Tu salsa está lista!</h3>
-    <p>Te enviamos a WhatsApp para coordinar tu pedido.</p>
+    <p>Tu salsa personalizada fue agregada al carrito.</p>
     <div class="modal-detail" id="modal-detail"></div>
     <div class="modal-btns">
-      <a class="modal-wa" id="modal-wa-btn" href="#" target="_blank">💬 Abrir WhatsApp</a>
+      
       <button class="modal-close" onclick="cerrarModal()">Crear otra</button>
     </div>
   </div>
@@ -325,12 +323,22 @@ function actualizarProgreso() {
   document.getElementById('progress-fill').style.width = `${(pasoActual/3)*100}%`;
 }
 function ordenar() {
-  const cn = estado.chiles.map(id=>chiles.find(c=>c.id===id)?.nombre).join(' + ');
-  const en = estado.extras.map(id=>extras.find(e=>e.id===id)?.nombre).join(', ');
-  document.getElementById('modal-detail').innerHTML = `🌶️ <strong>${estado.nombre}</strong><br>Chiles: ${cn}<br>${en?'Extras: '+en+'<br>':''}Precio: $190 MXN`;
-  const msg = encodeURIComponent(`Hola! Quiero ordenar una salsa macha personalizada Jam'i N'i:\n\n🌶️ Nombre: ${estado.nombre}\nChiles: ${cn}\nExtras: ${en||'Sin extras'}\nTotal: $190 MXN\n\n¿Me pueden dar información sobre el pago y envío?`);
-  document.getElementById('modal-wa-btn').href = `https://wa.me/5215610176064?text=${msg}`;
-  document.getElementById('modal').classList.add('open');
+  var cn = estado.chiles.map(function(id){ return (chiles.find(function(c){ return c.id===id; })||{}).nombre; }).filter(Boolean).join(' + ');
+  var en = estado.extras.map(function(id){ return (extras.find(function(e){ return e.id===id; })||{}).nombre; }).filter(Boolean).join(', ');
+
+  var carritoActual = JSON.parse(sessionStorage.getItem("jami_carrito") || "[]");
+  carritoActual.push({
+    id: "personalizada-" + Date.now(),
+    nombre: "Salsa Macha Personalizada",
+    nombrePersonalizado: estado.nombre,
+    chiles: cn,
+    extras: en || "Sin extras",
+    precio: 190,
+    cantidad: 1,
+    tipo: "personalizada"
+  });
+  sessionStorage.setItem("jami_carrito", JSON.stringify(carritoActual));
+  window.location.href = "carrito.html";
 }
 function cerrarModal() {
   document.getElementById('modal').classList.remove('open');
