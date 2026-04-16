@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jam'i N'i — Panel de pedidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --negro: #0a0a0a; --carbon: #111; --grafito: #1a1a1a; --borde: #2a2a2a;
+  --oro: #c9a84c; --oro-claro: #e8c97a; --rojo-vivo: #c0392b;
+  --crema: #f5f0e8; --gris: #888; --gris-claro: #bbb;
+  --verde: #27ae60; --azul: #2980b9; --naranja: #e67e22;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+}
+body { background: var(--negro); color: var(--crema); font-family: var(--font-body); font-size: 16px; min-height: 100vh; }
+
+/* LOGIN */
+.login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.login-card { background: var(--grafito); border: 1px solid var(--borde); padding: 48px; max-width: 400px; width: 100%; text-align: center; }
+.login-card h1 { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--oro); margin-bottom: 8px; }
+.login-card p { color: var(--gris-claro); margin-bottom: 28px; font-size: 15px; }
+.login-card input { width: 100%; background: var(--negro); border: 1px solid var(--borde); color: var(--crema); padding: 14px 16px; font-family: var(--font-body); font-size: 16px; outline: none; margin-bottom: 14px; transition: border-color 0.3s; text-align: center; letter-spacing: 0.2em; }
+.login-card input:focus { border-color: var(--oro); }
+.login-btn { width: 100%; padding: 14px; background: var(--oro); border: none; color: var(--negro); font-family: var(--font-body); font-size: 14px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.3s; }
+.login-btn:hover { background: var(--oro-claro); }
+.login-error { color: var(--rojo-vivo); font-size: 13px; margin-top: 10px; display: none; }
+
+/* ADMIN */
+.admin-wrap { display: none; }
+nav { background: var(--carbon); border-bottom: 1px solid var(--borde); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+.nav-logo { font-family: var(--font-display); font-size: 20px; color: var(--oro); font-style: italic; }
+.nav-info { font-size: 13px; color: var(--gris); }
+.nav-salir { background: none; border: 1px solid var(--borde); color: var(--gris); padding: 6px 16px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+.nav-salir:hover { border-color: var(--rojo-vivo); color: var(--rojo-vivo); }
+
+.admin-content { max-width: 1200px; margin: 0 auto; padding: 40px 32px; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 36px; }
+.stat-card { background: var(--grafito); border: 1px solid var(--borde); padding: 20px; text-align: center; }
+.stat-num { font-family: var(--font-display); font-size: 32px; color: var(--oro); display: block; }
+.stat-label { font-size: 12px; color: var(--gris); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; display: block; }
+
+/* FILTROS */
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; }
+.filtro-btn { padding: 6px 16px; border: 1px solid var(--borde); background: none; color: var(--gris); font-family: var(--font-body); font-size: 13px; cursor: pointer; transition: all 0.2s; border-radius: 20px; }
+.filtro-btn:hover { border-color: var(--oro); color: var(--oro); }
+.filtro-btn.active { background: var(--oro); border-color: var(--oro); color: var(--negro); }
+.buscar { background: var(--grafito); border: 1px solid var(--borde); color: var(--crema); padding: 8px 14px; font-family: var(--font-body); font-size: 14px; outline: none; width: 220px; transition: border-color 0.3s; }
+.buscar:focus { border-color: var(--oro); }
+
+/* TABLA */
+.tabla-wrap { background: var(--grafito); border: 1px solid var(--borde); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { padding: 12px 16px; text-align: left; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gris); border-bottom: 1px solid var(--borde); background: var(--carbon); font-weight: 400; }
+td { padding: 14px 16px; border-bottom: 1px solid rgba(42,42,42,0.5); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(201,168,76,0.03); }
+.pedido-id { font-family: var(--font-display); font-size: 13px; color: var(--oro); }
+.pedido-cliente { font-size: 15px; font-weight: 400; }
+.pedido-email { font-size: 12px; color: var(--gris); margin-top: 2px; }
+.pedido-productos { font-size: 13px; color: var(--gris-claro); line-height: 1.6; }
+.pedido-total { font-family: var(--font-display); font-size: 18px; color: var(--oro); white-space: nowrap; }
+.pedido-fecha { font-size: 12px; color: var(--gris); white-space: nowrap; }
+.pedido-tipo { display: inline-block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+.tipo-linea { background: rgba(201,168,76,0.15); color: var(--oro-claro); }
+.tipo-personalizada { background: rgba(192,57,43,0.15); color: #e07070; }
+
+/* ESTADOS */
+.estado-select { background: var(--negro); border: 1px solid var(--borde); color: var(--crema); padding: 6px 10px; font-family: var(--font-body); font-size: 13px; outline: none; cursor: pointer; transition: border-color 0.3s; width: 100%; }
+.estado-select:focus { border-color: var(--oro); }
+.estado-pagado { border-color: var(--azul) !important; color: #7ab8d4 !important; }
+.estado-recibido { border-color: var(--naranja) !important; color: #e8aa6a !important; }
+.estado-preparacion { border-color: var(--oro) !important; color: var(--oro-claro) !important; }
+.estado-enviado { border-color: #8e44ad !important; color: #c39bd3 !important; }
+.estado-entregado { border-color: var(--verde) !important; color: #7dcea0 !important; }
+
+.vacio { text-align: center; padding: 60px 24px; color: var(--gris); }
+.vacio h3 { font-family: var(--font-display); font-size: 22px; font-weight: 400; margin-bottom: 8px; color: var(--gris-claro); }
+
+.loading { text-align: center; padding: 40px; color: var(--gris); font-style: italic; }
+.refresh-btn { background: none; border: 1px solid var(--borde); color: var(--gris); padding: 8px 20px; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
+.refresh-btn:hover { border-color: var(--oro); color: var(--oro); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <h1>Jam'i N'i</h1>
+    <p>Panel de administración de pedidos</p>
+    <input type="password" id="password-input" placeholder="Contraseña" onkeydown="if(event.key==='Enter') entrar()">
+    <button class="login-btn" onclick="entrar()">Entrar</button>
+    <p class="login-error" id="login-error">Contraseña incorrecta</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="admin-wrap">
+  <nav>
+    <span class="nav-logo">Jam'i N'i — Pedidos</span>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="nav-info" id="nav-info">Cargando...</span>
+      <button class="refresh-btn" onclick="cargarPedidos()">↻ Actualizar</button>
+      <button class="nav-salir" onclick="salir()">Salir</button>
+    </div>
+  </nav>
+
+  <div class="admin-content">
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Pedidos totales</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-hoy">—</span><span class="stat-label">Hoy</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-ingresos">—</span><span class="stat-label">Ingresos totales</span></div>
+      <div class="stat-card"><span class="stat-num" id="stat-pendientes">—</span><span class="stat-label">Por enviar</span></div>
+    </div>
+
+    <div class="filtros">
+      <button class="filtro-btn active" onclick="filtrar('todos', this)">Todos</button>
+      <button class="filtro-btn" onclick="filtrar('pagado', this)">Pagado</button>
+      <button class="filtro-btn" onclick="filtrar('recibido', this)">Recibido</button>
+      <button class="filtro-btn" onclick="filtrar('en preparacion', this)">En preparación</button>
+      <button class="filtro-btn" onclick="filtrar('enviado', this)">Enviado</button>
+      <button class="filtro-btn" onclick="filtrar('entregado', this)">Entregado</button>
+      <input type="text" class="buscar" id="buscar" placeholder="Buscar por nombre o email..." oninput="renderTabla()">
+    </div>
+
+    <div class="tabla-wrap">
+      <div class="loading" id="tabla-loading">Cargando pedidos...</div>
+      <table id="tabla-pedidos" style="display:none">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-body"></tbody>
+      </table>
+      <div class="vacio" id="tabla-vacio" style="display:none">
+        <h3>No hay pedidos</h3>
+        <p>Aquí aparecerán todos los pedidos de tu tienda.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var password = "";
+var pedidos = [];
+var filtroActual = "todos";
+
+function entrar() {
+  password = document.getElementById("password-input").value;
+  if (!password) return;
+  document.getElementById("login-error").style.display = "none";
+  fetch("/api/obtener-pedidos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: password })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error && data.error === "No autorizado") {
+      document.getElementById("login-error").style.display = "block";
+      return;
+    }
+    pedidos = data.pedidos || [];
+    document.getElementById("login-wrap").style.display = "none";
+    document.getElementById("admin-wrap").style.display = "block";
+    actualizarStats();
+    renderTabla();
+  })
+  .catch(function(err) {
+    console.error(err);
+    document.getElementById("login-error").textContent = "Error de conexion. Intenta de nuevo.";
+    document.getElementById("login-error").style.display = "block";
+  });
+}
+
+function cargarPedidos() {
+  document.getElementById("tabla-loading").style.display = "block";
+  document.getElementById("tabla-pedidos").style.display = "none";
+  fetch("/api/obtener-pedidos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: password })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    pedidos = data.pedidos || [];
+    actualizarStats();
+    renderTabla();
+    document.getElementById("tabla-loading").style.display = "none";
+    document.getElementById("tabla-pedidos").style.display = "table";
+  });
+}
+
+function actualizarStats() {
+  var hoy = new Date().toDateString();
+  var pedidosHoy = pedidos.filter(function(p) { return new Date(p.created_at).toDateString() === hoy; });
+  var ingresos = pedidos.reduce(function(s, p) { return s + p.total; }, 0);
+  var porEnviar = pedidos.filter(function(p) { return p.estado_pedido === "pagado" || p.estado_pedido === "recibido" || p.estado_pedido === "en preparacion"; });
+
+  document.getElementById("stat-total").textContent = pedidos.length;
+  document.getElementById("stat-hoy").textContent = pedidosHoy.length;
+  document.getElementById("stat-ingresos").textContent = "$" + ingresos.toLocaleString();
+  document.getElementById("stat-pendientes").textContent = porEnviar.length;
+  document.getElementById("nav-info").textContent = pedidos.length + " pedidos en total";
+}
+
+function filtrar(estado, btn) {
+  filtroActual = estado;
+  document.querySelectorAll(".filtro-btn").forEach(function(b) { b.classList.remove("active"); });
+  btn.classList.add("active");
+  renderTabla();
+}
+
+function renderTabla() {
+  var busqueda = document.getElementById("buscar").value.toLowerCase();
+  var filtrados = pedidos.filter(function(p) {
+    var matchEstado = filtroActual === "todos" || p.estado_pedido === filtroActual;
+    var matchBusqueda = !busqueda || p.nombre.toLowerCase().includes(busqueda) || p.email.toLowerCase().includes(busqueda);
+    return matchEstado && matchBusqueda;
+  });
+
+  document.getElementById("tabla-loading").style.display = "none";
+
+  if (filtrados.length === 0) {
+    document.getElementById("tabla-pedidos").style.display = "none";
+    document.getElementById("tabla-vacio").style.display = "block";
+    return;
+  }
+
+  document.getElementById("tabla-pedidos").style.display = "table";
+  document.getElementById("tabla-vacio").style.display = "none";
+
+  var html = "";
+  for (var i = 0; i < filtrados.length; i++) {
+    var p = filtrados[i];
+    var fecha = new Date(p.created_at);
+    var fechaStr = fecha.getDate() + "/" + (fecha.getMonth()+1) + "/" + fecha.getFullYear() + " " + fecha.getHours() + ":" + (fecha.getMinutes() < 10 ? "0" : "") + fecha.getMinutes();
+    var productos = Array.isArray(p.productos) ? p.productos.map(function(pr) {
+      return pr.nombre + (pr.cantidad > 1 ? " x" + pr.cantidad : "") + (pr.nombrePersonalizado ? " (" + pr.nombrePersonalizado + ")" : "");
+    }).join("<br>") : JSON.stringify(p.productos);
+
+    var estadoClass = "estado-" + p.estado_pedido.replace(" ", "");
+    if (p.estado_pedido === "en preparacion") estadoClass = "estado-preparacion";
+
+    html += "<tr>";
+    html += "<td><span class='pedido-id'>" + p.id.substring(0, 8).toUpperCase() + "</span></td>";
+    html += "<td><div class='pedido-cliente'>" + p.nombre + "</div><div class='pedido-email'>" + p.email + "<br>" + p.telefono + "</div></td>";
+    html += "<td><div class='pedido-productos'>" + productos + "</div></td>";
+    html += "<td><span class='pedido-total'>$" + p.total + "</span></td>";
+    html += "<td><span class='pedido-tipo " + (p.tipo === "personalizada" ? "tipo-personalizada" : "tipo-linea") + "'>" + (p.tipo === "personalizada" ? "Personalizada" : "Linea") + "</span></td>";
+    html += "<td><span class='pedido-fecha'>" + fechaStr + "</span></td>";
+    html += "<td><select class='estado-select " + estadoClass + "' onchange='actualizarEstado(\"" + p.id + "\", this)'>";
+    var estados = ["pagado", "recibido", "en preparacion", "enviado", "entregado"];
+    for (var j = 0; j < estados.length; j++) {
+      html += "<option value='" + estados[j] + "'" + (p.estado_pedido === estados[j] ? " selected" : "") + ">" + estados[j].charAt(0).toUpperCase() + estados[j].slice(1) + "</option>";
+    }
+    html += "</select></td>";
+    html += "</tr>";
+  }
+  document.getElementById("tabla-body").innerHTML = html;
+}
+
+function actualizarEstado(id, select) {
+  var nuevoEstado = select.value;
+  select.disabled = true;
+
+  fetch("/api/actualizar-pedido", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: id, estado_pedido: nuevoEstado, password: password })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    select.disabled = false;
+    if (data.success) {
+      for (var i = 0; i < pedidos.length; i++) {
+        if (pedidos[i].id === id) { pedidos[i].estado_pedido = nuevoEstado; break; }
+      }
+      var estadoClass = "estado-" + nuevoEstado.replace(" ", "");
+      if (nuevoEstado === "en preparacion") estadoClass = "estado-preparacion";
+      select.className = "estado-select " + estadoClass;
+      actualizarStats();
+    } else {
+      alert("Error actualizando el estado. Intenta de nuevo.");
+    }
+  })
+  .catch(function() {
+    select.disabled = false;
+    alert("Error de conexion.");
+  });
+}
+
+function salir() {
+  password = "";
+  pedidos = [];
+  document.getElementById("admin-wrap").style.display = "none";
+  document.getElementById("login-wrap").style.display = "flex";
+  document.getElementById("password-input").value = "";
+}
+</script>
+</body>
+</html>
