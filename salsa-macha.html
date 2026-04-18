@@ -247,16 +247,22 @@ function renderChiles() {
   document.getElementById('btn-next-0').disabled = estado.chiles.length === 0;
 }
 function renderExtras() {
-  document.getElementById('extras-grid').innerHTML = extras.map(e => {
-    const sel = estado.extras.includes(e.id);
-    const dis = !sel && estado.extras.length >= 3;
-    return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleExtra(\''+e.id+'\')'}">
-     if (e.imagen) {
-  html += "<div style=\"width:100%;height:80px;overflow:hidden;margin-bottom:10px;background:#111;\"><img src=\"" + e.imagen + "\" alt=\"" + e.nombre + "\" style=\"width:100%;height:100%;object-fit:contain;\"></div>";
-} else {
-  html += "<span class=\"opcion-icon\">" + e.icon + "</span>";
-};<div class="opcion-name">${e.nombre}</div><div class="opcion-desc">${e.desc}</div></div>`;
-  }).join('');
+  var html = "";
+  for (var i = 0; i < extras.length; i++) {
+    var e = extras[i];
+    var sel = estado.extras.includes(e.id);
+    var dis = !sel && estado.extras.length >= 3;
+    html += "<div class=\"opcion-card " + (sel?"selected":"") + " " + (dis?"disabled":"") + "\" " + (dis?"":"onclick=\"toggleExtra('" + e.id + "')\"") + ">";
+    if (e.imagen) {
+      html += "<div style=\"width:100%;height:80px;overflow:hidden;margin-bottom:10px;background:#111;\"><img src=\"" + e.imagen + "\" alt=\"" + e.nombre + "\" style=\"width:100%;height:100%;object-fit:contain;\"></div>";
+    } else {
+      html += "<span class=\"opcion-icon\">" + e.icon + "</span>";
+    }
+    html += "<div class=\"opcion-name\">" + e.nombre + "</div>";
+    html += "<div class=\"opcion-desc\">" + e.desc + "</div>";
+    html += "</div>";
+  }
+  document.getElementById("extras-grid").innerHTML = html;
 }
 function toggleChile(id) {
   const i = estado.chiles.indexOf(id);
