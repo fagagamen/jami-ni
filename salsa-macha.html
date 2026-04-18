@@ -251,7 +251,11 @@ function renderExtras() {
     const sel = estado.extras.includes(e.id);
     const dis = !sel && estado.extras.length >= 3;
     return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleExtra(\''+e.id+'\')'}">
-      "<img src=\"" + c.imagen + "\" style=\"width:100%;height:120px;object-fit:cover;margin-bottom:10px;\">" : "<span class=\"opcion-icon\">" + c.icon + "</span>";<div class="opcion-name">${e.nombre}</div><div class="opcion-desc">${e.desc}</div></div>`;
+     if (e.imagen) {
+  html += "<div style=\"width:100%;height:80px;overflow:hidden;margin-bottom:10px;background:#111;\"><img src=\"" + e.imagen + "\" alt=\"" + e.nombre + "\" style=\"width:100%;height:100%;object-fit:contain;\"></div>";
+} else {
+  html += "<span class=\"opcion-icon\">" + e.icon + "</span>";
+};<div class="opcion-name">${e.nombre}</div><div class="opcion-desc">${e.desc}</div></div>`;
   }).join('');
 }
 function toggleChile(id) {
