@@ -198,21 +198,79 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
 @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
 
 @media (max-width: 768px) {
-  nav { padding: 16px 20px; }
-  .nav-links { gap: 16px; }
-  .hero { padding: 100px 24px 60px; }
-  .sobre { grid-template-columns: 1fr; padding: 60px 24px; gap: 40px; }
-  .sobre-visual { height: 250px; }
-  .salsas-section { padding: 60px 24px 80px; }
-  .proceso { padding: 60px 24px; }
-  .proceso-grid { grid-template-columns: 1fr; gap: 32px; }
-  .envios { padding: 60px 24px; }
-  .envios-inner { grid-template-columns: 1fr; }
-  .cta-section { padding: 60px 24px; }
-  footer { padding: 32px 24px; flex-direction: column; text-align: center; }
-  .carrito-bar { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
-  .personaliza-banner { padding: 28px 20px; }
-  .divider { padding: 0 24px; }
+
+  /* NAV MOVIL */
+  nav {
+    padding: 12px 16px;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .logo img { height: 32px; }
+  .nav-links {
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; }
+  .carrito-nav { font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; }
+  .nav-cta { padding: 6px 10px !important; font-size: 11px !important; white-space: nowrap; }
+
+  /* HERO */
+  .hero { padding: 100px 20px 80px; }
+  .hero h1 { font-size: clamp(40px, 12vw, 72px); }
+  .hero-sub { font-size: 16px; }
+  .hero-cta { flex-direction: column; align-items: center; gap: 10px; }
+  .btn-primary, .btn-outline { padding: 14px 32px; font-size: 13px; width: 100%; max-width: 280px; text-align: center; }
+
+  /* SOBRE */
+  .sobre { grid-template-columns: 1fr; padding: 48px 20px; gap: 32px; }
+  .sobre-visual { height: 220px; }
+
+  /* SALSAS */
+  .salsas-section { padding: 48px 16px 64px; }
+  .salsas-grid { grid-template-columns: 1fr; gap: 2px; }
+  .salsa-card { padding: 24px 20px; }
+
+  /* BANNER PERSONALIZA */
+  .personaliza-banner { flex-direction: column; padding: 24px 16px; gap: 16px; text-align: center; }
+  .personaliza-banner h3 { font-size: 22px; }
+
+  /* PROCESO */
+  .proceso { padding: 48px 20px; }
+  .proceso-grid { grid-template-columns: 1fr; gap: 28px; }
+
+  /* ENVIOS */
+  .envios { padding: 48px 16px; }
+  .envios-inner { grid-template-columns: 1fr; gap: 2px; }
+
+  /* CTA */
+  .cta-section { padding: 48px 20px; }
+  .whatsapp-btn { padding: 14px 28px; font-size: 13px; }
+
+  /* FOOTER */
+  footer { padding: 28px 20px; flex-direction: column; text-align: center; gap: 16px; }
+  .footer-links { justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+  /* CARRITO BAR */
+  .carrito-bar { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+  .carrito-info { font-size: 15px; }
+
+  /* DIVIDER */
+  .divider { padding: 0 20px; }
+
+  /* MODAL */
+  .modal { padding: 32px 24px; }
+}
+
+@media (max-width: 400px) {
+  .nav-links { gap: 8px; }
+  .nav-links a { font-size: 10px; }
+  .nav-cta { display: none; }
+  .hero h1 { font-size: 36px; }
 }
 </style>
 </head>
