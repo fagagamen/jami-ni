@@ -41,9 +41,9 @@ export default async function handler(req, res) {
         }
       },
       back_urls: {
-        success: "https://fagagamen.github.io/jami-ni/gracias.html",
-        failure: "https://fagagamen.github.io/jami-ni/carrito.html",
-        pending: "https://fagagamen.github.io/jami-ni/carrito.html"
+        success: "https://jami-ni.vercel.app/gracias.html",
+        failure: "https://jami-ni.vercel.app/carrito.html",
+        pending: "https://jami-ni.vercel.app/carrito.html"
       },
       auto_return: "approved",
       statement_descriptor: "JAMI NI SALSA MACHA",
