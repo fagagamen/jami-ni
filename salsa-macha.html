@@ -225,14 +225,14 @@ const chiles = [
   { id: 'habanero', icon: '⚡', nombre: 'Habanero tatemado', desc: 'Frutal y devastadoramente picante' , imagen: "imagenes/habanero.png"},
 ];
 const extras = [
-  { id: 'cacahuate', icon: '🥜', nombre: 'Cacahuate', desc: 'Clásico y crujiente' },
-  { id: 'ajonjoli', icon: '🌾', nombre: 'Ajonjolí', desc: 'Tostado y aromático' },
-  { id: 'nuez-india', icon: '🌰', nombre: 'Nuez de la india', desc: 'Cremosa y delicada' },
-  { id: 'almendra', icon: '🤍', nombre: 'Almendra', desc: 'Suave con toque dulce' },
-  { id: 'arandano', icon: '🫐', nombre: 'Arándano', desc: 'Frutal y ligeramente ácido' },
-  { id: 'nuez', icon: '🍂', nombre: 'Nuez', desc: 'Profunda y mantecosa' },
-  { id: 'pistache', icon: '💚', nombre: 'Pistache', desc: 'Aromático y elegante' },
-  { id: 'pepitas', icon: '🌻', nombre: 'Pepitas', desc: 'Crocantes y nutritivas' },
+  { id: 'cacahuate', icon: '🥜', nombre: 'Cacahuate', desc: 'Clásico y crujiente' , imagen: "imagenes/cacahuate.png" },
+  { id: 'ajonjoli', icon: '🌾', nombre: 'Ajonjolí', desc: 'Tostado y aromático' , imagen: "imagenes/ajonjoli.png"},
+  { id: 'nuez-india', icon: '🌰', nombre: 'Nuez de la india', desc: 'Cremosa y delicada' , imagen: "imagenes/india.png"},
+  { id: 'almendra', icon: '🤍', nombre: 'Almendra', desc: 'Suave con toque dulce' , imagen: "imagenes/almendra.png"},
+  { id: 'arandano', icon: '🫐', nombre: 'Arándano', desc: 'Frutal y ligeramente ácido' , imagen: "imagenes/arandano.png"},
+  { id: 'nuez', icon: '🍂', nombre: 'Nuez', desc: 'Profunda y mantecosa' , imagen: "imagenes/nuez.png"},
+  { id: 'pistache', icon: '💚', nombre: 'Pistache', desc: 'Aromático y elegante' , imagen: "imagenes/pistache.png"},
+  { id: 'pepitas', icon: '🌻', nombre: 'Pepitas', desc: 'Crocantes y nutritivas' , imagen: "imagenes/pepitas.png"},
 ];
 let estado = { chiles: [], extras: [], nombre: '' };
 let pasoActual = 0;
@@ -251,7 +251,7 @@ function renderExtras() {
     const sel = estado.extras.includes(e.id);
     const dis = !sel && estado.extras.length >= 3;
     return `<div class="opcion-card ${sel?'selected':''} ${dis?'disabled':''}" onclick="${dis?'':'toggleExtra(\''+e.id+'\')'}">
-      <span class="opcion-icon">${e.icon}</span><div class="opcion-name">${e.nombre}</div><div class="opcion-desc">${e.desc}</div></div>`;
+      "<img src=\"" + c.imagen + "\" style=\"width:100%;height:120px;object-fit:cover;margin-bottom:10px;\">" : "<span class=\"opcion-icon\">" + c.icon + "</span>";<div class="opcion-name">${e.nombre}</div><div class="opcion-desc">${e.desc}</div></div>`;
   }).join('');
 }
 function toggleChile(id) {
