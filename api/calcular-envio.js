@@ -62,6 +62,7 @@ module.exports = async function handler(req, res) {
         postal_code: "16035",
         area_level1: "Ciudad de México",
         area_level2: "Xochimilco",
+        area_level3: "San Lorenzo La Cebada",
         name: "Jami Ni",
         phone: "5610176064",
         email: "salsajamini@gmail.com"
@@ -71,15 +72,16 @@ module.exports = async function handler(req, res) {
         postal_code: String(cp_destino),
         area_level1: estadoDestino,
         area_level2: municipioDestino,
+        area_level3: "Centro",
         name: "Cliente",
         phone: "5500000000",
         email: "cliente@email.com"
       },
       parcel: {
-        weight: String(peso),
-        length: String(largo),
-        width: String(ancho),
-        height: String(alto),
+        weight: peso,
+        length: Math.ceil(largo),
+        width: Math.ceil(ancho),
+        height: Math.ceil(alto),
         mass_unit: "kg",
         distance_unit: "cm"
       }
