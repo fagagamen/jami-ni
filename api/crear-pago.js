@@ -41,9 +41,9 @@ export default async function handler(req, res) {
         }
       },
       back_urls: {
-        success: "https://jami-ni.vercel.app/gracias.html",
-        failure: "https://jami-ni.vercel.app/carrito.html",
-        pending: "https://jami-ni.vercel.app/carrito.html"
+        success: "https://www.salsasjamini.com/gracias.html",
+        failure: "https://www.salsasjamini.com/carrito.html",
+        pending: "https://www.salsasjamini.com/carrito.html"
       },
       auto_return: "approved",
       statement_descriptor: "JAMI NI SALSA MACHA",

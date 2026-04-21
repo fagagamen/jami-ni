@@ -99,7 +99,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + process.env.RESEND_API_KEY
       },
-      body: JSON.stringify({ from: "Jam'i N'i <pedidos@jami-ni.com>", to: emailCliente.to, subject: emailCliente.subject, html: emailCliente.html })
+      body: JSON.stringify({ from: "Jam'i N'i <pedidos@salsasjamini.com>", to: emailCliente.to, subject: emailCliente.subject, html: emailCliente.html })
     });
 
     await fetch("https://api.resend.com/emails", {
@@ -108,7 +108,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + process.env.RESEND_API_KEY
       },
-      body: JSON.stringify({ from: "Jam'i N'i <pedidos@jami-ni.com>", to: emailAdmin.to, subject: emailAdmin.subject, html: emailAdmin.html })
+      body: JSON.stringify({ from: "Jam'i N'i <pedidos@salsasjamini.com>", to: emailAdmin.to, subject: emailAdmin.subject, html: emailAdmin.html })
     });
 
     return res.status(200).json({ success: true, pedidoId: pedidoId });
