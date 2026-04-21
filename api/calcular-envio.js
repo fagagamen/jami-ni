@@ -62,7 +62,6 @@ module.exports = async function handler(req, res) {
         postal_code: "16035",
         area_level1: "Ciudad de México",
         area_level2: "Xochimilco",
-        area_level3: "San Lorenzo La Cebada",
         name: "Jami Ni",
         phone: "5610176064",
         email: "salsajamini@gmail.com"
@@ -100,7 +99,8 @@ module.exports = async function handler(req, res) {
     });
 
     var cotizacionText = await cotizacionRes.text();
-    console.log("Skydropx status:", cotizacionRes.status, "body:", cotizacionText.substring(0, 1000));
+    console.log("Skydropx FULL response status:", cotizacionRes.status);
+    console.log("Skydropx FULL response body:", cotizacionText);
 
     var cotizacionData;
     try { cotizacionData = JSON.parse(cotizacionText); }
