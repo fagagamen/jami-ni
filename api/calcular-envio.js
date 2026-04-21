@@ -1,4 +1,4 @@
-async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -12,6 +12,25 @@ async function handler(req, res) {
       return res.status(400).json({ error: "CP invalido" });
     }
 
+    // Paso 1: Obtener estado y municipio del CP usando API gratuita de Mexico
+    var estadoDestino = "Mexico";
+    var municipioDestino = "Mexico";
+
+    try {
+      var cpRes = await fetch("https://mexico-api.devaleff.com/api/codigo-postal/" + String(cp_destino));
+      if (cpRes.ok) {
+        var cpData = await cpRes.json();
+        if (cpData.data && cpData.data.length > 0) {
+          estadoDestino = cpData.data[0].d_estado || "Mexico";
+          municipioDestino = cpData.data[0].D_mnpio || "Mexico";
+          console.log("CP lookup OK:", estadoDestino, municipioDestino);
+        }
+      }
+    } catch(e) {
+      console.log("CP lookup failed, using defaults:", e.message);
+    }
+
+    // Paso 2: Obtener token OAuth de Skydropx
     const tokenRes = await fetch("https://api-pro.skydropx.com/api/v1/oauth/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -27,13 +46,16 @@ async function handler(req, res) {
       return res.status(500).json({ error: "Error autenticando con Skydropx", detalle: tokenData });
     }
     const token = tokenData.access_token;
+    console.log("Token OK");
 
+    // Paso 3: Calcular peso y dimensiones
     var frascos = parseInt(total_frascos) || 1;
     var peso = frascos === 1 ? 0.32 : frascos * 0.32;
     var largo = frascos === 1 ? 12.5 : 23.0;
     var ancho = frascos === 1 ? 9.8 : 18.0;
     var alto = 10.0;
 
+    // Paso 4: Crear cotizacion con estado y municipio reales
     var bodyObj = {
       address_from: {
         country_code: "MX",
@@ -48,8 +70,8 @@ async function handler(req, res) {
       address_to: {
         country_code: "MX",
         postal_code: String(cp_destino),
-        area_level1: "Mexico",
-        area_level2: "Mexico",
+        area_level1: estadoDestino,
+        area_level2: municipioDestino,
         area_level3: "Centro",
         name: "Cliente",
         phone: "5500000000",
@@ -66,7 +88,7 @@ async function handler(req, res) {
     };
 
     var bodyStr = JSON.stringify(bodyObj);
-    console.log("v6 - Enviando:", bodyStr);
+    console.log("Enviando a Skydropx:", bodyStr);
 
     const cotizacionRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations", {
       method: "POST",
@@ -79,7 +101,7 @@ async function handler(req, res) {
     });
 
     var cotizacionText = await cotizacionRes.text();
-    console.log("v6 - Status:", cotizacionRes.status, "Body:", cotizacionText.substring(0, 500));
+    console.log("Skydropx status:", cotizacionRes.status, "body:", cotizacionText.substring(0, 500));
 
     var cotizacionData;
     try { cotizacionData = JSON.parse(cotizacionText); }
@@ -91,7 +113,9 @@ async function handler(req, res) {
 
     var cotizacionId = cotizacionData.data && cotizacionData.data.id;
     if (!cotizacionId) return res.status(500).json({ error: "Sin ID cotizacion", data: cotizacionData });
+    console.log("Cotizacion ID:", cotizacionId);
 
+    // Paso 5: Esperar y obtener rates
     var rates = [];
     for (var i = 0; i < 8; i++) {
       await new Promise(function(r) { setTimeout(r, 2500); });
@@ -102,12 +126,12 @@ async function handler(req, res) {
       var ratesData = await ratesRes.json();
       var attrs = ratesData.data && ratesData.data.attributes;
       rates = (attrs && attrs.rates) || [];
-      console.log("v6 - Intento", (i+1), "- rates:", rates.length, "completed:", attrs && attrs.is_completed);
+      console.log("Intento", (i+1), "- rates:", rates.length, "completed:", attrs && attrs.is_completed);
       if (attrs && attrs.is_completed) break;
     }
 
     if (rates.length === 0) {
-      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [] });
+      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [], mensaje: "Sin opciones para este CP" });
     }
 
     var ratesOrdenados = rates
@@ -128,9 +152,7 @@ async function handler(req, res) {
     return res.status(200).json({ cotizacion_id: cotizacionId, rates: ratesOrdenados });
 
   } catch (error) {
-    console.error("v6 - Error:", error.message);
+    console.error("Error general:", error.message);
     return res.status(500).json({ error: "Error interno", detalle: error.message });
   }
 }
-
-module.exports = handler;
