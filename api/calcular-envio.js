@@ -1,5 +1,4 @@
-// v4 - fix parcel format
-export default async function handler(req, res) {
+async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -10,10 +9,9 @@ export default async function handler(req, res) {
     const { cp_destino, total_frascos } = req.body;
 
     if (!cp_destino || String(cp_destino).length !== 5) {
-      return res.status(400).json({ error: "CP invalido - debe tener 5 digitos" });
+      return res.status(400).json({ error: "CP invalido" });
     }
 
-    // Paso 1: Obtener token OAuth
     const tokenRes = await fetch("https://api-pro.skydropx.com/api/v1/oauth/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,53 +24,49 @@ export default async function handler(req, res) {
 
     const tokenData = await tokenRes.json();
     if (!tokenRes.ok || !tokenData.access_token) {
-      console.error("Token error:", JSON.stringify(tokenData));
       return res.status(500).json({ error: "Error autenticando con Skydropx", detalle: tokenData });
     }
     const token = tokenData.access_token;
-    console.log("Token OK");
 
-    // Paso 2: Calcular peso y dimensiones
     var frascos = parseInt(total_frascos) || 1;
     var peso = frascos === 1 ? 0.32 : frascos * 0.32;
     var largo = frascos === 1 ? 12.5 : 23.0;
     var ancho = frascos === 1 ? 9.8 : 18.0;
-    var alto = frascos === 1 ? 10.0 : 10.0;
+    var alto = 10.0;
 
-    // Paso 3: Crear cotizacion
     var bodyObj = {
-      "address_from": {
-        "country_code": "MX",
-        "postal_code": "16035",
-        "area_level1": "Ciudad de Mexico",
-        "area_level2": "Xochimilco",
-        "area_level3": "San Lorenzo La Cebada",
-        "name": "Jami Ni",
-        "phone": "5610176064",
-        "email": "salsajamini@gmail.com"
+      address_from: {
+        country_code: "MX",
+        postal_code: "16035",
+        area_level1: "Ciudad de Mexico",
+        area_level2: "Xochimilco",
+        area_level3: "San Lorenzo La Cebada",
+        name: "Jami Ni",
+        phone: "5610176064",
+        email: "salsajamini@gmail.com"
       },
-      "address_to": {
-        "country_code": "MX",
-        "postal_code": String(cp_destino),
-        "area_level1": "Mexico",
-        "area_level2": "Mexico",
-        "area_level3": "Centro",
-        "name": "Cliente",
-        "phone": "5500000000",
-        "email": "cliente@email.com"
+      address_to: {
+        country_code: "MX",
+        postal_code: String(cp_destino),
+        area_level1: "Mexico",
+        area_level2: "Mexico",
+        area_level3: "Centro",
+        name: "Cliente",
+        phone: "5500000000",
+        email: "cliente@email.com"
       },
-      "parcel": {
-        "weight": peso,
-        "length": largo,
-        "width": ancho,
-        "height": alto,
-        "mass_unit": "kg",
-        "distance_unit": "cm"
+      parcel: {
+        weight: peso,
+        length: largo,
+        width: ancho,
+        height: alto,
+        mass_unit: "kg",
+        distance_unit: "cm"
       }
     };
 
     var bodyStr = JSON.stringify(bodyObj);
-    console.log("Enviando a Skydropx:", bodyStr);
+    console.log("v6 - Enviando:", bodyStr);
 
     const cotizacionRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations", {
       method: "POST",
@@ -85,54 +79,39 @@ export default async function handler(req, res) {
     });
 
     var cotizacionText = await cotizacionRes.text();
-    console.log("Respuesta Skydropx status:", cotizacionRes.status);
-    console.log("Respuesta Skydropx body:", cotizacionText.substring(0, 800));
+    console.log("v6 - Status:", cotizacionRes.status, "Body:", cotizacionText.substring(0, 500));
 
     var cotizacionData;
-    try {
-      cotizacionData = JSON.parse(cotizacionText);
-    } catch(e) {
-      return res.status(500).json({ error: "Respuesta invalida de Skydropx", raw: cotizacionText.substring(0, 200) });
-    }
+    try { cotizacionData = JSON.parse(cotizacionText); }
+    catch(e) { return res.status(500).json({ error: "Respuesta invalida", raw: cotizacionText.substring(0, 300) }); }
 
     if (!cotizacionRes.ok) {
-      return res.status(500).json({ error: "Error al cotizar", detalle: cotizacionData });
+      return res.status(500).json({ error: "Error cotizacion", detalle: cotizacionData });
     }
 
     var cotizacionId = cotizacionData.data && cotizacionData.data.id;
-    if (!cotizacionId) {
-      return res.status(500).json({ error: "No se obtuvo ID de cotizacion", respuesta: cotizacionData });
-    }
-    console.log("Cotizacion ID:", cotizacionId);
+    if (!cotizacionId) return res.status(500).json({ error: "Sin ID cotizacion", data: cotizacionData });
 
-    // Paso 4: Esperar y obtener rates
     var rates = [];
     for (var i = 0; i < 8; i++) {
       await new Promise(function(r) { setTimeout(r, 2500); });
-
       var ratesRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations/" + cotizacionId, {
-        headers: {
-          "Authorization": "Bearer " + token,
-          "Accept": "application/json"
-        }
+        headers: { "Authorization": "Bearer " + token, "Accept": "application/json" }
       });
-
-      if (!ratesRes.ok) { console.log("Intento " + (i+1) + " - error HTTP"); continue; }
-
+      if (!ratesRes.ok) continue;
       var ratesData = await ratesRes.json();
       var attrs = ratesData.data && ratesData.data.attributes;
-      var isCompleted = attrs && attrs.is_completed;
       rates = (attrs && attrs.rates) || [];
-      console.log("Intento " + (i+1) + " - completed:" + isCompleted + " rates:" + rates.length);
-      if (isCompleted) break;
+      console.log("v6 - Intento", (i+1), "- rates:", rates.length, "completed:", attrs && attrs.is_completed);
+      if (attrs && attrs.is_completed) break;
     }
 
     if (rates.length === 0) {
-      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [], mensaje: "Sin opciones para este CP" });
+      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [] });
     }
 
     var ratesOrdenados = rates
-      .filter(function(r) { return (r.total_pricing || r.amount_local); })
+      .filter(function(r) { return r.total_pricing || r.amount_local; })
       .sort(function(a, b) { return (a.total_pricing || a.amount_local || 0) - (b.total_pricing || b.amount_local || 0); })
       .slice(0, 5)
       .map(function(r) {
@@ -149,7 +128,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ cotizacion_id: cotizacionId, rates: ratesOrdenados });
 
   } catch (error) {
-    console.error("Error general:", error.message);
+    console.error("v6 - Error:", error.message);
     return res.status(500).json({ error: "Error interno", detalle: error.message });
   }
 }
+
+module.exports = handler;
