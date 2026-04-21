@@ -79,6 +79,9 @@ tr:hover td { background: rgba(201,168,76,0.03); }
 .estado-entregado { border-color: var(--verde) !important; color: #7dcea0 !important; }
 
 .vacio { text-align: center; padding: 60px 24px; color: var(--gris); }
+.etiqueta-btn { background: none; border: 1px solid var(--borde); color: var(--gris-claro); padding: 6px 12px; font-family: var(--font-body); font-size: 12px; cursor: pointer; transition: all 0.3s; width: 100%; margin-top: 6px; }
+.etiqueta-btn:hover { border-color: var(--oro); color: var(--oro); }
+.etiqueta-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .vacio h3 { font-family: var(--font-display); font-size: 22px; font-weight: 400; margin-bottom: 8px; color: var(--gris-claro); }
 
 .loading { text-align: center; padding: 40px; color: var(--gris); font-style: italic; }
@@ -140,6 +143,7 @@ tr:hover td { background: rgba(201,168,76,0.03); }
             <th>Tipo</th>
             <th>Fecha</th>
             <th>Estado</th>
+            <th>Envio</th>
           </tr>
         </thead>
         <tbody id="tabla-body"></tbody>
@@ -267,6 +271,7 @@ function renderTabla() {
       html += "<option value='" + estados[j] + "'" + (p.estado_pedido === estados[j] ? " selected" : "") + ">" + estados[j].charAt(0).toUpperCase() + estados[j].slice(1) + "</option>";
     }
     html += "</select></td>";
+    html += "<td>" + generarEtiquetaBtn(p) + "</td>";
     html += "</tr>";
   }
   document.getElementById("tabla-body").innerHTML = html;
@@ -299,6 +304,84 @@ function actualizarEstado(id, select) {
   .catch(function() {
     select.disabled = false;
     alert("Error de conexion.");
+  });
+}
+
+
+function generarEtiquetaBtn(p) {
+  if (p.estado_pedido === "enviado" || p.estado_pedido === "entregado") {
+    return "<button class=\'etiqueta-btn\' disabled>✓ Enviado</button>";
+  }
+  return "<button class=\'etiqueta-btn\' id=\'etq-" + p.id + "\' onclick=\'generarEtiqueta(\"" + p.id + "\")\'> 📦 Etiqueta</button>";
+}
+
+function generarEtiqueta(pedidoId) {
+  var pedido = null;
+  for (var i = 0; i < pedidos.length; i++) {
+    if (pedidos[i].id === pedidoId) { pedido = pedidos[i]; break; }
+  }
+  if (!pedido) { alert("Pedido no encontrado"); return; }
+  var btn = document.getElementById("etq-" + pedidoId);
+  if (btn) { btn.disabled = true; btn.textContent = "Calculando..."; }
+  var totalFrascos = Array.isArray(pedido.productos) ? pedido.productos.reduce(function(s, p) { return s + (p.cantidad || 1); }, 0) : 1;
+  fetch("/api/calcular-envio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cp_destino: pedido.cp, total_frascos: totalFrascos })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!data.rates || data.rates.length === 0) {
+      alert("No hay opciones de envio para CP " + pedido.cp);
+      if (btn) { btn.disabled = false; btn.textContent = "📦 Etiqueta"; }
+      return;
+    }
+    var rate = data.rates[0];
+    var msg = "Generar etiqueta con:\n" + rate.carrier + " - " + rate.service + "\n$" + rate.precio + " MXN\n\nDestinatario: " + pedido.nombre + "\n" + pedido.calle + ", " + pedido.ciudad + "\n\nConfirmar?";
+    if (!confirm(msg)) {
+      if (btn) { btn.disabled = false; btn.textContent = "📦 Etiqueta"; }
+      return;
+    }
+    if (btn) btn.textContent = "Generando...";
+    fetch("/api/generar-etiqueta", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        password: password,
+        pedido_id: pedidoId,
+        rate_id: rate.rate_id,
+        cotizacion_id: rate.cotizacion_id,
+        destinatario: {
+          nombre: pedido.nombre, email: pedido.email, telefono: pedido.telefono,
+          calle: pedido.calle, colonia: pedido.colonia, cp: pedido.cp,
+          ciudad: pedido.ciudad, estado: pedido.estado, referencias: pedido.referencias || ""
+        }
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.success) {
+        if (btn) { btn.textContent = "Enviado"; btn.disabled = true; }
+        if (result.label_url) {
+          window.open(result.label_url, "_blank");
+          alert("Etiqueta generada!\nTracking: " + (result.tracking_number || "N/A"));
+        } else {
+          alert("Envio creado.\nTracking: " + (result.tracking_number || "N/A"));
+        }
+        cargarPedidos();
+      } else {
+        alert("Error: " + (result.error || "Error desconocido"));
+        if (btn) { btn.disabled = false; btn.textContent = "📦 Etiqueta"; }
+      }
+    })
+    .catch(function() {
+      alert("Error de conexion.");
+      if (btn) { btn.disabled = false; btn.textContent = "📦 Etiqueta"; }
+    });
+  })
+  .catch(function() {
+    alert("Error calculando envio.");
+    if (btn) { btn.disabled = false; btn.textContent = "📦 Etiqueta"; }
   });
 }
 
