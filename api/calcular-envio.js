@@ -60,7 +60,7 @@ module.exports = async function handler(req, res) {
       address_from: {
         country_code: "MX",
         postal_code: "16035",
-        area_level1: "Ciudad de Mexico",
+        area_level1: "Ciudad de México",
         area_level2: "Xochimilco",
         area_level3: "San Lorenzo La Cebada",
         name: "Jami Ni",
@@ -72,7 +72,6 @@ module.exports = async function handler(req, res) {
         postal_code: String(cp_destino),
         area_level1: estadoDestino,
         area_level2: municipioDestino,
-        area_level3: "Centro",
         name: "Cliente",
         phone: "5500000000",
         email: "cliente@email.com"
@@ -101,7 +100,7 @@ module.exports = async function handler(req, res) {
     });
 
     var cotizacionText = await cotizacionRes.text();
-    console.log("Skydropx status:", cotizacionRes.status, "body:", cotizacionText.substring(0, 500));
+    console.log("Skydropx status:", cotizacionRes.status, "body:", cotizacionText.substring(0, 1000));
 
     var cotizacionData;
     try { cotizacionData = JSON.parse(cotizacionText); }
