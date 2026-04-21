@@ -76,10 +76,10 @@ module.exports = async function handler(req, res) {
         email: "cliente@email.com"
       },
       parcel: {
-        weight: peso,
-        length: largo,
-        width: ancho,
-        height: alto,
+        weight: String(peso),
+        length: String(largo),
+        width: String(ancho),
+        height: String(alto),
         mass_unit: "kg",
         distance_unit: "cm"
       }
@@ -88,7 +88,7 @@ module.exports = async function handler(req, res) {
     var bodyStr = JSON.stringify(bodyObj);
     console.log("Enviando a Skydropx:", bodyStr);
 
-    const cotizacionRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations", {
+    const cotizacionRes = await fetch("https://api-pro.skydropx.com/api/v2/quotations", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -118,7 +118,7 @@ module.exports = async function handler(req, res) {
     var rates = [];
     for (var i = 0; i < 8; i++) {
       await new Promise(function(r) { setTimeout(r, 2500); });
-      var ratesRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations/" + cotizacionId, {
+      var ratesRes = await fetch("https://api-pro.skydropx.com/api/v2/quotations/" + cotizacionId, {
         headers: { "Authorization": "Bearer " + token, "Accept": "application/json" }
       });
       if (!ratesRes.ok) continue;
