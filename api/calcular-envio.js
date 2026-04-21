@@ -8,11 +8,11 @@ export default async function handler(req, res) {
   try {
     const { cp_destino, total_frascos } = req.body;
 
-    if (!cp_destino || cp_destino.length !== 5) {
-      return res.status(400).json({ error: "CP invalido" });
+    if (!cp_destino || String(cp_destino).length !== 5) {
+      return res.status(400).json({ error: "CP invalido - debe tener 5 digitos" });
     }
 
-    // Obtener token de Skydropx PRO
+    // Paso 1: Obtener token OAuth
     const tokenRes = await fetch("https://api-pro.skydropx.com/api/v1/oauth/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,143 +25,130 @@ export default async function handler(req, res) {
 
     const tokenData = await tokenRes.json();
     if (!tokenRes.ok || !tokenData.access_token) {
-      console.error("Token error:", tokenData);
-      return res.status(500).json({ error: "Error autenticando con Skydropx" });
+      console.error("Token error:", JSON.stringify(tokenData));
+      return res.status(500).json({ error: "Error autenticando con Skydropx", detalle: tokenData });
     }
-
     const token = tokenData.access_token;
+    console.log("Token OK");
 
-    // Calcular peso y dimensiones segun cantidad de frascos
+    // Paso 2: Calcular peso y dimensiones
     var frascos = parseInt(total_frascos) || 1;
-    var peso, largo, ancho, alto;
+    var peso = frascos === 1 ? 0.32 : frascos * 0.32;
+    var largo = frascos === 1 ? 12.5 : 23.0;
+    var ancho = frascos === 1 ? 9.8 : 18.0;
+    var alto = frascos === 1 ? 10.0 : 10.0;
 
-    if (frascos === 1) {
-      peso = 0.32;
-      largo = 12.5;
-      ancho = 9.8;
-      alto = 10;
-    } else {
-      peso = frascos * 0.32;
-      largo = 23.0;
-      ancho = 18.0;
-      alto = 10.0;
-    }
-
-    // Crear cotizacion con formato correcto de Skydropx PRO
-    const cotizacionBody = {
-      address_from: {
-        country_code: "MX",
-        postal_code: "16035",
-        area_level1: "Ciudad de Mexico",
-        area_level2: "Xochimilco",
-        area_level3: "San Lorenzo La Cebada",
-        name: "Jam i N i",
-        phone: "5610176064",
-        email: "salsajamini@gmail.com"
+    // Paso 3: Crear cotizacion
+    var bodyObj = {
+      "address_from": {
+        "country_code": "MX",
+        "postal_code": "16035",
+        "area_level1": "Ciudad de Mexico",
+        "area_level2": "Xochimilco",
+        "area_level3": "San Lorenzo La Cebada",
+        "name": "Jami Ni",
+        "phone": "5610176064",
+        "email": "salsajamini@gmail.com"
       },
-      address_to: {
-        country_code: "MX",
-        postal_code: cp_destino,
-        name: "Cliente",
-        phone: "5500000000",
-        email: "cliente@email.com"
+      "address_to": {
+        "country_code": "MX",
+        "postal_code": String(cp_destino),
+        "area_level1": "Mexico",
+        "area_level2": "Mexico",
+        "area_level3": "Centro",
+        "name": "Cliente",
+        "phone": "5500000000",
+        "email": "cliente@email.com"
       },
-      packages: [
-        {
-          weight: peso,
-          height: alto,
-          width: ancho,
-          length: largo,
-          mass_unit: "kg",
-          distance_unit: "cm"
-        }
-      ]
+      "parcel": {
+        "weight": peso,
+        "length": largo,
+        "width": ancho,
+        "height": alto,
+        "mass_unit": "kg",
+        "distance_unit": "cm"
+      }
     };
 
-    console.log("Cotizando con body:", JSON.stringify(cotizacionBody));
+    var bodyStr = JSON.stringify(bodyObj);
+    console.log("Enviando a Skydropx:", bodyStr);
 
     const cotizacionRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer " + token
       },
-      body: JSON.stringify(cotizacionBody)
+      body: bodyStr
     });
 
-    const cotizacionData = await cotizacionRes.json();
-    console.log("Cotizacion response:", JSON.stringify(cotizacionData).substring(0, 500));
+    var cotizacionText = await cotizacionRes.text();
+    console.log("Respuesta Skydropx status:", cotizacionRes.status);
+    console.log("Respuesta Skydropx body:", cotizacionText.substring(0, 800));
+
+    var cotizacionData;
+    try {
+      cotizacionData = JSON.parse(cotizacionText);
+    } catch(e) {
+      return res.status(500).json({ error: "Respuesta invalida de Skydropx", raw: cotizacionText.substring(0, 200) });
+    }
 
     if (!cotizacionRes.ok) {
-      console.error("Cotizacion error:", cotizacionData);
-      return res.status(500).json({ error: "Error al cotizar envio", detalle: cotizacionData });
+      return res.status(500).json({ error: "Error al cotizar", detalle: cotizacionData });
     }
 
-    const cotizacionId = cotizacionData.data && cotizacionData.data.id;
+    var cotizacionId = cotizacionData.data && cotizacionData.data.id;
     if (!cotizacionId) {
-      return res.status(500).json({ error: "No se obtuvo ID de cotizacion" });
+      return res.status(500).json({ error: "No se obtuvo ID de cotizacion", respuesta: cotizacionData });
     }
+    console.log("Cotizacion ID:", cotizacionId);
 
-    // Reintentar hasta que la cotizacion este completa
+    // Paso 4: Esperar y obtener rates
     var rates = [];
-    var intentos = 0;
-
-    while (intentos < 8) {
+    for (var i = 0; i < 8; i++) {
       await new Promise(function(r) { setTimeout(r, 2500); });
-      intentos++;
 
       var ratesRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations/" + cotizacionId, {
-        headers: { "Authorization": "Bearer " + token }
+        headers: {
+          "Authorization": "Bearer " + token,
+          "Accept": "application/json"
+        }
       });
 
-      if (!ratesRes.ok) {
-        console.log("Intento " + intentos + " - error obteniendo rates");
-        continue;
-      }
+      if (!ratesRes.ok) { console.log("Intento " + (i+1) + " - error HTTP"); continue; }
 
       var ratesData = await ratesRes.json();
       var attrs = ratesData.data && ratesData.data.attributes;
       var isCompleted = attrs && attrs.is_completed;
       rates = (attrs && attrs.rates) || [];
-
-      console.log("Intento " + intentos + " - completed: " + isCompleted + " - rates: " + rates.length);
-
+      console.log("Intento " + (i+1) + " - completed:" + isCompleted + " rates:" + rates.length);
       if (isCompleted) break;
     }
 
     if (rates.length === 0) {
-      return res.status(200).json({
-        cotizacion_id: cotizacionId,
-        rates: [],
-        mensaje: "No hay opciones de envio disponibles para este CP"
-      });
+      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [], mensaje: "Sin opciones para este CP" });
     }
 
-    // Ordenar por precio y devolver las mejores opciones
     var ratesOrdenados = rates
-      .filter(function(r) { return r.total_pricing || r.amount_local; })
-      .sort(function(a, b) {
-        return (a.total_pricing || a.amount_local) - (b.total_pricing || b.amount_local);
-      })
+      .filter(function(r) { return (r.total_pricing || r.amount_local); })
+      .sort(function(a, b) { return (a.total_pricing || a.amount_local || 0) - (b.total_pricing || b.amount_local || 0); })
       .slice(0, 5)
       .map(function(r) {
         return {
           rate_id: r.id,
-          carrier: r.carrier || r.carrier_name || "Paqueteria",
+          carrier: r.carrier || "Paqueteria",
           service: r.service_level_name || r.service || "Estandar",
           precio: Math.ceil(r.total_pricing || r.amount_local || 0),
-          dias: r.days || r.estimated_days || "3-5",
+          dias: r.days || "3-5",
           cotizacion_id: cotizacionId
         };
       });
 
-    return res.status(200).json({
-      cotizacion_id: cotizacionId,
-      rates: ratesOrdenados
-    });
+    return res.status(200).json({ cotizacion_id: cotizacionId, rates: ratesOrdenados });
 
   } catch (error) {
-    console.error("Error:", error);
-    return res.status(500).json({ error: "Error interno del servidor", detalle: error.message });
+    console.error("Error general:", error.message);
+    return res.status(500).json({ error: "Error interno", detalle: error.message });
   }
 }
