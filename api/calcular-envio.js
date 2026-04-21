@@ -52,7 +52,7 @@ export default async function handler(req, res) {
       alto = 10.0 * Math.ceil(frascos / 3);
     }
 
-    // Crear cotizacion
+    // Crear cotizacion con formato correcto de Skydropx PRO
     const cotizacionRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations", {
       method: "POST",
       headers: {
@@ -60,16 +60,24 @@ export default async function handler(req, res) {
         "Authorization": "Bearer " + token
       },
       body: JSON.stringify({
-        zip_from: "16035",
-        zip_to: cp_destino,
-        parcel: {
-          weight: peso,
-          height: alto,
-          width: ancho,
-          length: largo,
-          mass_unit: "kg",
-          distance_unit: "cm"
-        }
+        address_from: {
+          country_code: "MX",
+          postal_code: "16035"
+        },
+        address_to: {
+          country_code: "MX",
+          postal_code: cp_destino
+        },
+        parcels: [
+          {
+            weight: peso,
+            height: alto,
+            width: ancho,
+            length: largo,
+            mass_unit: "kg",
+            distance_unit: "cm"
+          }
+        ]
       })
     });
 
