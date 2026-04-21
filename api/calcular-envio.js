@@ -114,7 +114,8 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: "Error cotizacion", detalle: cotizacionData });
     }
 
-    var cotizacionId = cotizacionData.data && cotizacionData.data.id;
+    // New API returns id directly at root level, not nested in data
+    var cotizacionId = cotizacionData.id || (cotizacionData.data && cotizacionData.data.id);
     if (!cotizacionId) return res.status(500).json({ error: "Sin ID cotizacion", data: cotizacionData });
     console.log("Cotizacion ID:", cotizacionId);
 
@@ -127,26 +128,30 @@ module.exports = async function handler(req, res) {
       });
       if (!ratesRes.ok) continue;
       var ratesData = await ratesRes.json();
-      var attrs = ratesData.data && ratesData.data.attributes;
-      rates = (attrs && attrs.rates) || [];
-      console.log("Intento", (i+1), "- rates:", rates.length, "completed:", attrs && attrs.is_completed);
-      if (attrs && attrs.is_completed) break;
+      // New API returns rates directly at root level
+      var isCompleted = ratesData.is_completed || (ratesData.data && ratesData.data.attributes && ratesData.data.attributes.is_completed);
+      rates = ratesData.rates || (ratesData.data && ratesData.data.attributes && ratesData.data.attributes.rates) || [];
+      var successRates = rates.filter(function(r) { return r.success && r.total; });
+      console.log("Intento", (i+1), "- completed:", isCompleted, "rates:", rates.length, "success:", successRates.length);
+      if (isCompleted || successRates.length > 0) break;
     }
 
-    if (rates.length === 0) {
-      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [], mensaje: "Sin opciones para este CP" });
+    var successRatesFinal = rates.filter(function(r) { return r.success && r.total; });
+    if (successRatesFinal.length === 0) {
+      return res.status(200).json({ cotizacion_id: cotizacionId, rates: [], mensaje: "Sin opciones disponibles para este CP" });
     }
+    rates = successRatesFinal;
 
     var ratesOrdenados = rates
-      .filter(function(r) { return r.total_pricing || r.amount_local; })
-      .sort(function(a, b) { return (a.total_pricing || a.amount_local || 0) - (b.total_pricing || b.amount_local || 0); })
+      .filter(function(r) { return r.success && r.total; })
+      .sort(function(a, b) { return (parseFloat(a.total) || 0) - (parseFloat(b.total) || 0); })
       .slice(0, 5)
       .map(function(r) {
         return {
           rate_id: r.id,
-          carrier: r.carrier || "Paqueteria",
-          service: r.service_level_name || r.service || "Estandar",
-          precio: Math.ceil(r.total_pricing || r.amount_local || 0),
+          carrier: r.provider_display_name || r.provider_name || "Paqueteria",
+          service: r.provider_service_name || "Estandar",
+          precio: Math.ceil(parseFloat(r.total) || 0),
           dias: r.days || "3-5",
           cotizacion_id: cotizacionId
         };
