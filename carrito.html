@@ -99,6 +99,21 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .mp-logo { font-size: 20px; }
 
 .mp-note { font-size: 12px; color: var(--gris); text-align: center; margin-top: 10px; line-height: 1.5; }
+.envio-opciones { margin-bottom: 16px; }
+.envio-titulo { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 10px; display: block; }
+.envio-opcion { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--borde); background: var(--grafito); margin-bottom: 6px; cursor: pointer; transition: border-color 0.2s; }
+.envio-opcion:hover { border-color: rgba(201,168,76,0.3); }
+.envio-opcion.selected { border-color: var(--oro); background: rgba(201,168,76,0.05); }
+.envio-opcion input[type=radio] { accent-color: var(--oro); flex-shrink: 0; }
+.envio-opcion-info { flex: 1; }
+.envio-carrier { font-size: 14px; font-weight: 400; color: var(--crema); }
+.envio-dias { font-size: 12px; color: var(--gris); }
+.envio-precio { font-family: var(--font-display); font-size: 18px; color: var(--oro); }
+.calcular-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--borde); color: var(--crema); font-family: var(--font-body); font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-bottom: 12px; }
+.calcular-btn:hover { border-color: var(--oro); color: var(--oro); }
+.calcular-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.envio-loading { text-align: center; font-size: 13px; color: var(--gris); padding: 12px; font-style: italic; }
+.envio-error { font-size: 12px; color: var(--rojo-vivo); padding: 8px 12px; border: 1px solid rgba(192,57,43,0.3); background: rgba(192,57,43,0.05); margin-bottom: 10px; }
 
 /* ERRORES */
 .campo-error { border-color: var(--rojo-vivo) !important; }
@@ -232,15 +247,19 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 
       <div class="resumen-wrap" id="resumen-productos"></div>
 
-      <div class="envio-info">
-        <strong>Envío a toda la República Mexicana.</strong> El costo de envío se coordina contigo después de recibir tu pedido según tu ubicación.
+      <div class="envio-opciones">
+        <span class="envio-titulo">Costo de envío</span>
+        <button class="calcular-btn" id="calcular-btn" onclick="calcularEnvio()">
+          📦 Calcular costo de envío
+        </button>
+        <div id="envio-resultado"></div>
       </div>
 
-      <button class="mp-btn" id="mp-btn" onclick="procesarPedido()">
+      <button class="mp-btn" id="mp-btn" onclick="procesarPedido()" disabled>
         <span class="mp-logo">💳</span>
         Pagar con Mercado Pago
       </button>
-      <p class="mp-note">Al continuar serás redirigido a Mercado Pago para completar tu pago de forma segura.</p>
+      <p class="mp-note">Selecciona una opción de envío para continuar. Serás redirigido a Mercado Pago para completar tu pago de forma segura.</p>
     </div>
 
   </div>
@@ -306,11 +325,15 @@ function renderProductos() {
   renderResumen();
 }
 
+var envioSeleccionado = null;
+
 function renderResumen() {
-  var total = 0;
+  var subtotalProductos = 0;
   for (var i = 0; i < carrito.length; i++) {
-    total += carrito[i].precio * (carrito[i].cantidad || 1);
+    subtotalProductos += carrito[i].precio * (carrito[i].cantidad || 1);
   }
+  var costoEnvio = envioSeleccionado ? envioSeleccionado.precio : 0;
+  var total = subtotalProductos + costoEnvio;
   var html = "";
   for (var i = 0; i < carrito.length; i++) {
     var item = carrito[i];
@@ -318,8 +341,71 @@ function renderResumen() {
     var label = item.cantidad > 1 ? item.nombre + " x" + item.cantidad : item.nombre;
     html += "<div class=\"resumen-linea\"><span>" + label + "</span><span>$" + subtotal + "</span></div>";
   }
+  if (envioSeleccionado) {
+    html += "<div class=\"resumen-linea\"><span>Envio (" + envioSeleccionado.carrier + ")</span><span>$" + envioSeleccionado.precio + "</span></div>";
+  }
   html += "<div class=\"resumen-total-wrap\"><span class=\"resumen-total-label\">Total</span><span class=\"resumen-total-num\">$" + total + " MXN</span></div>";
   document.getElementById("resumen-productos").innerHTML = html;
+}
+
+function calcularEnvio() {
+  var cp = document.getElementById("f-cp").value.trim();
+  if (cp.length !== 5 || isNaN(cp)) {
+    document.getElementById("envio-resultado").innerHTML = "<div class=\"envio-error\">Por favor ingresa un Codigo Postal valido de 5 digitos antes de calcular el envio.</div>";
+    document.getElementById("f-cp").classList.add("campo-error");
+    return;
+  }
+  document.getElementById("f-cp").classList.remove("campo-error");
+  var totalFrascos = carrito.reduce(function(s, i) { return s + (i.cantidad || 1); }, 0);
+  var btn = document.getElementById("calcular-btn");
+  btn.disabled = true;
+  btn.textContent = "Calculando...";
+  document.getElementById("envio-resultado").innerHTML = "<div class=\"envio-loading\">Buscando las mejores opciones de envio para tu CP...</div>";
+
+  fetch("/api/calcular-envio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cp_destino: cp, total_frascos: totalFrascos })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.disabled = false;
+    btn.textContent = "Recalcular envio";
+    if (data.error || !data.rates || data.rates.length === 0) {
+      document.getElementById("envio-resultado").innerHTML = "<div class=\"envio-error\">No se encontraron opciones de envio para este CP. Por favor contactanos por WhatsApp para coordinar tu envio.</div>";
+      return;
+    }
+    var html = "";
+    for (var i = 0; i < data.rates.length; i++) {
+      var r = data.rates[i];
+      html += "<div class=\"envio-opcion\" onclick=\"seleccionarEnvio(" + JSON.stringify(r).replace(/"/g, "'") + ", this)\">";
+      html += "<input type=\"radio\" name=\"envio\" value=\"" + r.rate_id + "\">";
+      html += "<div class=\"envio-opcion-info\">";
+      html += "<div class=\"envio-carrier\">" + r.carrier + " — " + r.service + "</div>";
+      html += "<div class=\"envio-dias\">Entrega estimada: " + r.dias + " dias habiles</div>";
+      html += "</div>";
+      html += "<div class=\"envio-precio\">$" + r.precio + " <span style=\"font-size:12px;color:var(--gris);font-family:var(--font-body)\">MXN</span></div>";
+      html += "</div>";
+    }
+    document.getElementById("envio-resultado").innerHTML = html;
+    window._cotizacionId = data.cotizacion_id;
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.textContent = "Recalcular envio";
+    console.error(err);
+    document.getElementById("envio-resultado").innerHTML = "<div class=\"envio-error\">Error al calcular el envio. Intenta de nuevo.</div>";
+  });
+}
+
+function seleccionarEnvio(rate, el) {
+  document.querySelectorAll(".envio-opcion").forEach(function(e) { e.classList.remove("selected"); });
+  el.classList.add("selected");
+  el.querySelector("input[type=radio]").checked = true;
+  envioSeleccionado = rate;
+  envioSeleccionado.cotizacion_id = window._cotizacionId;
+  renderResumen();
+  document.getElementById("mp-btn").disabled = false;
 }
 
 function quitarProducto(idx) {
@@ -376,7 +462,13 @@ function procesarPedido() {
   var estado = document.getElementById("f-estado").value;
   var referencias = document.getElementById("f-referencias").value;
   var notas = document.getElementById("f-notas").value;
-  var total = carrito.reduce(function(s, i) { return s + i.precio * (i.cantidad || 1); }, 0);
+  if (!envioSeleccionado) {
+    alert("Por favor selecciona una opcion de envio antes de continuar.");
+    return;
+  }
+  var subtotalProductos = carrito.reduce(function(s, i) { return s + i.precio * (i.cantidad || 1); }, 0);
+  var costoEnvio = envioSeleccionado.precio;
+  var total = subtotalProductos + costoEnvio;
 
   var btn = document.getElementById("mp-btn");
   btn.disabled = true;
@@ -387,17 +479,21 @@ function procesarPedido() {
     calle: calle, colonia: colonia, cp: cp,
     ciudad: ciudad, estado: estado,
     referencias: referencias, notas: notas,
-    total: total
+    total: total,
+    envio: envioSeleccionado
   };
   sessionStorage.setItem("jami_pedido", JSON.stringify(pedidoData));
+
+  var itemsMP = carrito.map(function(i) {
+    return { nombre: i.nombre, precio: i.precio, cantidad: i.cantidad || 1 };
+  });
+  itemsMP.push({ nombre: "Envio " + envioSeleccionado.carrier, precio: envioSeleccionado.precio, cantidad: 1 });
 
   fetch("/api/crear-pago", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      items: carrito.map(function(i) {
-        return { nombre: i.nombre, precio: i.precio, cantidad: i.cantidad || 1 };
-      }),
+      items: itemsMP,
       payer: {
         nombre: nombre, email: email, telefono: telefono,
         calle: calle, colonia: colonia, cp: cp,
