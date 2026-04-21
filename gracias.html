@@ -46,6 +46,8 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 </div>
 <script>
 var pedido = JSON.parse(sessionStorage.getItem("jami_pedido") || "null");
+var carrito = JSON.parse(sessionStorage.getItem("jami_carrito") || "[]");
+
 if (pedido) {
   var det = document.getElementById("detalle-pedido");
   var html = "<strong>" + pedido.nombre + "</strong><br>";
@@ -54,6 +56,41 @@ if (pedido) {
   html += pedido.ciudad + ", " + pedido.estado + " CP " + pedido.cp + "<br><br>";
   html += "<strong>Total pagado: $" + pedido.total + " MXN</strong>";
   det.innerHTML = html;
+
+  // Detectar tipo de pedido
+  var tipo = "linea";
+  if (carrito.length > 0 && carrito[0].tipo === "personalizada") {
+    tipo = "personalizada";
+  }
+
+  // Guardar pedido en Supabase y enviar emails
+  fetch("/api/guardar-pedido", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: carrito.length > 0 ? carrito : [{ nombre: pedido.nombre || "Pedido", precio: pedido.total, cantidad: 1 }],
+      payer: {
+        nombre: pedido.nombre,
+        email: pedido.email,
+        telefono: pedido.telefono || "",
+        calle: pedido.calle,
+        colonia: pedido.colonia,
+        cp: pedido.cp,
+        ciudad: pedido.ciudad,
+        estado: pedido.estado,
+        referencias: pedido.referencias || "",
+        notas: pedido.notas || ""
+      },
+      tipo: tipo,
+      mp_id: new URLSearchParams(window.location.search).get("payment_id") || ""
+    })
+  }).then(function(r) { return r.json(); })
+  .then(function(data) {
+    console.log("Pedido guardado:", data);
+  }).catch(function(err) {
+    console.error("Error guardando pedido:", err);
+  });
+
   sessionStorage.removeItem("jami_carrito");
   sessionStorage.removeItem("jami_pedido");
 }
