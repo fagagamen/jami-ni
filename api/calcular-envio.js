@@ -81,19 +81,31 @@ export default async function handler(req, res) {
 
     const cotizacionId = cotizacionData.data.id;
 
-    // Esperar un momento y obtener rates
-    await new Promise(function(r) { setTimeout(r, 2000); });
+    // Reintentar hasta que la cotizacion este completa (max 8 intentos)
+    var rates = [];
+    var intentos = 0;
+    var maxIntentos = 8;
 
-    const ratesRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations/" + cotizacionId, {
-      headers: { "Authorization": "Bearer " + token }
-    });
+    while (intentos < maxIntentos) {
+      await new Promise(function(r) { setTimeout(r, 2500); });
+      intentos++;
 
-    const ratesData = await ratesRes.json();
-    if (!ratesRes.ok) {
-      return res.status(500).json({ error: "Error obteniendo tarifas" });
+      var ratesRes = await fetch("https://api-pro.skydropx.com/api/v1/quotations/" + cotizacionId, {
+        headers: { "Authorization": "Bearer " + token }
+      });
+
+      if (!ratesRes.ok) continue;
+
+      var ratesData = await ratesRes.json();
+      var attrs = ratesData.data && ratesData.data.attributes;
+      var isCompleted = attrs && attrs.is_completed;
+      rates = (attrs && attrs.rates) || [];
+
+      console.log("Intento " + intentos + " - completed: " + isCompleted + " - rates: " + rates.length);
+
+      if (isCompleted && rates.length > 0) break;
+      if (isCompleted && rates.length === 0) break;
     }
-
-    const rates = ratesData.data.attributes.rates || [];
 
     if (rates.length === 0) {
       return res.status(200).json({

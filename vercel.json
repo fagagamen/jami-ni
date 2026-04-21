@@ -1,5 +1,11 @@
 {
   "functions": {
+    "api/calcular-envio.js": {
+      "maxDuration": 30
+    },
+    "api/generar-etiqueta.js": {
+      "maxDuration": 30
+    },
     "api/*.js": {
       "maxDuration": 10
     }
