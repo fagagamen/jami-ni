@@ -57,6 +57,7 @@ module.exports = async function handler(req, res) {
 
     // Paso 4: Crear cotizacion con estado y municipio reales
     var bodyObj = {
+      quotation: {
       address_from: {
         country_code: "MX",
         postal_code: "16035",
@@ -85,6 +86,7 @@ module.exports = async function handler(req, res) {
         mass_unit: "kg",
         distance_unit: "cm"
       }
+      } // end quotation
     };
 
     var bodyStr = JSON.stringify(bodyObj);
