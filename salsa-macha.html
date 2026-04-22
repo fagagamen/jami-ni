@@ -124,7 +124,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 }
 .frasco-nombre-overlay {
   position: absolute;
-  bottom: 23.5%;
+  bottom: 16%;
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--font-display);
@@ -140,6 +140,43 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* NOTAS IMPORTANTES */
+.notas-importantes {
+  background: rgba(201,168,76,0.06);
+  border-left: 3px solid var(--oro);
+  padding: 16px 20px;
+  margin-top: 24px;
+  margin-bottom: 4px;
+}
+.notas-titulo {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--oro);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.notas-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.notas-lista li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--gris-claro);
+  line-height: 1.7;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(42,42,42,0.5);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.notas-lista li:last-child { border-bottom: none; }
+.nota-icon { flex-shrink: 0; color: var(--oro); font-size: 14px; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -174,6 +211,15 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
     <p class="step-subtitle">La base de tu salsa macha. Elige hasta 2 chiles para crear tu perfil de sabor único.</p>
     <div class="step-limit">Máximo 2 chiles</div>
     <div class="opciones-grid" id="chiles-grid"></div>
+    <div class="notas-importantes">
+      <div class="notas-titulo">⚠ Notas importantes</div>
+      <ul class="notas-lista">
+        <li><span class="nota-icon">⏱</span><span>Tu salsa es hecha con tus especificaciones y preferencias. Después de tu pedido la preparación puede tardar de <strong style="color:var(--crema)">5 a 7 días hábiles</strong>.</span></li>
+        <li><span class="nota-icon">❄️</span><span>Recuerda mantener tu salsa en <strong style="color:var(--crema)">refrigeración</strong> después de abrirla para conservar su frescura.</span></li>
+        <li><span class="nota-icon">✨</span><span><strong style="color:var(--oro)">Tip extra:</strong> Si quieres que tu salsa tenga sabores más profundos, déjala <strong style="color:var(--crema)">macerar 10 días</strong> después de recibirla antes de abrirla.</span></li>
+      </ul>
+    </div>
+
     <div class="nav-steps">
       <div></div>
       <button class="btn-next" id="btn-next-0" onclick="siguiente()" disabled>Siguiente →</button>
