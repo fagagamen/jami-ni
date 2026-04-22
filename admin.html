@@ -87,6 +87,20 @@ tr:hover td { background: rgba(201,168,76,0.03); }
 .loading { text-align: center; padding: 40px; color: var(--gris); font-style: italic; }
 .refresh-btn { background: none; border: 1px solid var(--borde); color: var(--gris); padding: 8px 20px; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
 .refresh-btn:hover { border-color: var(--oro); color: var(--oro); }
+.stock-section { margin-bottom: 36px; }
+.stock-titulo { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 14px; display: block; }
+.stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.stock-card { background: var(--grafito); border: 1px solid var(--borde); padding: 16px; }
+.stock-card-nombre { font-size: 14px; color: var(--crema); margin-bottom: 10px; }
+.stock-input-wrap { display: flex; align-items: center; gap: 8px; }
+.stock-input { background: var(--negro); border: 1px solid var(--borde); color: var(--crema); padding: 8px 10px; font-family: var(--font-body); font-size: 16px; width: 70px; text-align: center; outline: none; }
+.stock-input:focus { border-color: var(--oro); }
+.stock-save-btn { background: var(--oro); border: none; color: var(--negro); padding: 8px 14px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.1em; cursor: pointer; transition: background 0.3s; }
+.stock-save-btn:hover { background: var(--oro-claro); }
+.stock-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.stock-status { font-size: 11px; color: var(--verde); margin-top: 6px; display: none; }
+.stock-0 { border-color: var(--rojo-vivo); }
+.stock-low { border-color: #e67e22; }
 </style>
 </head>
 <body>
@@ -119,6 +133,14 @@ tr:hover td { background: rgba(201,168,76,0.03); }
       <div class="stat-card"><span class="stat-num" id="stat-hoy">—</span><span class="stat-label">Hoy</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-ingresos">—</span><span class="stat-label">Ingresos totales</span></div>
       <div class="stat-card"><span class="stat-num" id="stat-pendientes">—</span><span class="stat-label">Por enviar</span></div>
+    </div>
+
+    <!-- STOCK -->
+    <div class="stock-section">
+      <span class="stock-titulo">Stock disponible</span>
+      <div class="stock-grid" id="stock-grid">
+        <div style="color:var(--gris);font-size:13px;font-style:italic">Cargando stock...</div>
+      </div>
     </div>
 
     <div class="filtros">
@@ -181,6 +203,7 @@ function entrar() {
     document.getElementById("admin-wrap").style.display = "block";
     actualizarStats();
     renderTabla();
+    cargarStock();
   })
   .catch(function(err) {
     console.error(err);
@@ -382,6 +405,80 @@ function generarEtiqueta(pedidoId) {
   .catch(function() {
     alert("Error calculando envio.");
     if (btn) { btn.disabled = false; btn.textContent = "📦 Etiqueta"; }
+  });
+}
+
+
+var stockData = [];
+
+function cargarStock() {
+  fetch("/api/obtener-stock")
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      stockData = d.stock || [];
+      renderStock();
+    })
+    .catch(function(e) { console.error("Error cargando stock:", e); });
+}
+
+function renderStock() {
+  var grid = document.getElementById("stock-grid");
+  if (!grid) return;
+  if (stockData.length === 0) {
+    grid.innerHTML = "<div style='color:var(--gris);font-size:13px'>No hay items de stock configurados.</div>";
+    return;
+  }
+  var html = "";
+  for (var i = 0; i < stockData.length; i++) {
+    var s = stockData[i];
+    var cardClass = "stock-card" + (s.cantidad === 0 ? " stock-0" : s.cantidad <= 3 ? " stock-low" : "");
+    html += "<div class='" + cardClass + "' id='stock-card-" + s.id + "'>";
+    html += "<div class='stock-card-nombre'>" + s.nombre + "</div>";
+    html += "<div class='stock-input-wrap'>";
+    html += "<input type='number' class='stock-input' id='stock-input-" + s.id + "' value='" + s.cantidad + "' min='0' max='999'>";
+    html += "<button class='stock-save-btn' id='stock-btn-" + s.id + "' onclick='guardarStock("" + s.id + "")'>Guardar</button>";
+    html += "</div>";
+    html += "<div class='stock-status' id='stock-status-" + s.id + "'>✓ Guardado</div>";
+    html += "</div>";
+  }
+  grid.innerHTML = html;
+}
+
+function guardarStock(id) {
+  var input = document.getElementById("stock-input-" + id);
+  var btn = document.getElementById("stock-btn-" + id);
+  var status = document.getElementById("stock-status-" + id);
+  var cantidad = parseInt(input.value);
+  if (isNaN(cantidad) || cantidad < 0) { alert("Cantidad invalida"); return; }
+  btn.disabled = true;
+  btn.textContent = "...";
+  fetch("/api/actualizar-stock", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: password, id: id, cantidad: cantidad })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    btn.disabled = false;
+    btn.textContent = "Guardar";
+    if (d.success) {
+      status.style.display = "block";
+      setTimeout(function() { status.style.display = "none"; }, 2000);
+      var card = document.getElementById("stock-card-" + id);
+      if (card) {
+        card.className = "stock-card" + (cantidad === 0 ? " stock-0" : cantidad <= 3 ? " stock-low" : "");
+      }
+      for (var i = 0; i < stockData.length; i++) {
+        if (stockData[i].id === id) { stockData[i].cantidad = cantidad; break; }
+      }
+    } else {
+      alert("Error: " + (d.error || "Error desconocido"));
+    }
+  })
+  .catch(function() {
+    btn.disabled = false;
+    btn.textContent = "Guardar";
+    alert("Error de conexion.");
   });
 }
 

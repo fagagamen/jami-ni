@@ -272,6 +272,11 @@ footer { border-top: 1px solid var(--borde); padding: 40px 48px; display: flex; 
   .nav-cta { display: none; }
   .hero h1 { font-size: 36px; }
 }
+
+/* SOLD OUT */
+.sold-out-badge { position: absolute; top: 12px; right: 12px; background: var(--rojo-vivo); color: white; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 4px 10px; font-family: var(--font-body); z-index: 2; }
+.salsa-card.agotada .agregar-btn { opacity: 0.4; cursor: not-allowed; pointer-events: none; background: var(--grafito); color: var(--gris); }
+.stock-poco { font-size: 11px; color: #e67e22; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -433,6 +438,21 @@ var salsas = [
 ];
 
 var carrito = JSON.parse(sessionStorage.getItem("jami_carrito") || "[]");
+var stockData = {};
+
+function cargarStock() {
+  fetch("/api/obtener-stock")
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.stock) {
+        for (var i = 0; i < d.stock.length; i++) {
+          stockData[d.stock[i].id] = d.stock[i].cantidad;
+        }
+      }
+      renderSalsas();
+    })
+    .catch(function() { renderSalsas(); });
+}
 
 function renderSalsas() {
   var grid = document.getElementById("salsas-grid");
@@ -444,19 +464,31 @@ function renderSalsas() {
     for (var j = 0; j < carrito.length; j++) {
       if (carrito[j].id === s.id) { enCarrito = true; break; }
     }
+    var stockQty = (stockData[s.id] !== undefined) ? stockData[s.id] : 999;
+    var agotada = stockQty === 0;
     var calavs = "";
     for (var k = 0; k < 5; k++) {
       calavs += "<span class=\"calavera " + (k < s.calaveras ? "on" : "") + "\">&#x1F480;</span>";
     }
-    html += "<div class=\"salsa-card\" style=\"animation: fadeUp 0.5s ease " + (i * 0.1) + "s both\">";
+    html += "<div class=\"salsa-card\" style=\"animation: fadeUp 0.5s ease " + (i * 0.1) + "s both; position:relative\">";
+    if (agotada) {
+      html += "<div class=\"sold-out-badge\">Sold Out</div>";
+    } else if (stockQty > 0 && stockQty <= 3) {
+      html += "<div class=\"stock-poco\">Solo " + stockQty + " disponible" + (stockQty > 1 ? "s" : "") + "</div>";
+    }
     html += "<div class=\"salsa-nombre\">" + s.nombre + "</div>";
     html += "<div class=\"salsa-desc\">" + s.desc + "</div>";
     html += "<div class=\"calaveras\">" + calavs + "<span class=\"calaveras-label\">" + s.calaveras + "/5 &#x1F480;</span></div>";
     html += "<div class=\"salsa-footer\">";
     html += "<div class=\"salsa-precio\">$" + s.precio + " <small>MXN</small></div>";
-    html += "<button class=\"agregar-btn " + (enCarrito ? "agregado" : "") + "\" style=\"position:relative;z-index:1\" onclick=\"toggleCarrito('" + s.id + "')\">";
-    html += enCarrito ? "&#x2713; Agregado" : "Agregar";
-    html += "</button></div></div>";
+    if (agotada) {
+      html += "<button class=\"agregar-btn\" disabled>Agotado</button>";
+    } else {
+      html += "<button class=\"agregar-btn " + (enCarrito ? "agregado" : "") + "\" style=\"position:relative;z-index:1\" onclick=\"toggleCarrito('" + s.id + "')\">";
+      html += enCarrito ? "&#x2713; Agregado" : "Agregar";
+      html += "</button>";
+    }
+    html += "</div></div>";
   }
   grid.innerHTML = html;
 }
@@ -531,7 +563,7 @@ var observer = new IntersectionObserver(function(entries) {
 }, { threshold: 0.1 });
 document.querySelectorAll(".reveal").forEach(function(el) { observer.observe(el); });
 
-renderSalsas();
+cargarStock();
 actualizarCarrito();
 </script>
 </body>
