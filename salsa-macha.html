@@ -108,6 +108,38 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
   .progress-wrap { padding: 0 20px; }
   .config { padding: 32px 20px 100px; }
 }
+
+/* FRASCO IMAGEN REAL */
+.frasco-img-wrap {
+  position: relative;
+  display: inline-block;
+  width: 280px;
+  max-width: 90vw;
+}
+.frasco-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+}
+.frasco-nombre-overlay {
+  position: absolute;
+  bottom: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(16px, 4vw, 22px);
+  font-style: italic;
+  color: #f5f0e8;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  pointer-events: none;
+  letter-spacing: 0.05em;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
 </head>
 <body>
@@ -180,19 +212,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
     <div class="step-title">Tu <em>Salsa Macha</em></div>
     <p class="step-subtitle">Revisa tu creación antes de ordenar.</p>
     <div class="frasco-preview">
-      <svg class="frasco-svg" viewBox="0 0 140 180" xmlns="http://www.w3.org/2000/svg">
-        <defs><clipPath id="fc"><path d="M48 50 Q44 55 37 68 L30 145 Q29 158 39 163 L101 163 Q111 158 110 145 L103 68 Q96 55 92 50 Z"/></clipPath></defs>
-        <rect x="51" y="24" width="38" height="28" rx="4" fill="#1a1a1a" stroke="#c9a84c" stroke-width="1.5"/>
-        <rect x="55" y="28" width="30" height="4" rx="2" fill="#c9a84c" opacity="0.4"/>
-        <path d="M48 50 Q44 55 37 68 L30 145 Q29 158 39 163 L101 163 Q111 158 110 145 L103 68 Q96 55 92 50 Z" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
-        <rect id="frasco-fill" x="31" y="80" width="78" height="83" fill="#8B1A1A" opacity="0.75" clip-path="url(#fc)"/>
-        <path d="M44 62 Q42 82 40 118" stroke="rgba(255,255,255,0.05)" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <rect x="38" y="96" width="64" height="50" rx="3" fill="#0a0a0a" stroke="#c9a84c" stroke-width="0.8" opacity="0.92"/>
-        <text x="70" y="111" text-anchor="middle" font-family="'Playfair Display', serif" font-size="7" fill="#c9a84c" font-style="italic">Jam'i N'i</text>
-        <text x="70" y="122" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="6.5" fill="#f5f0e8" id="frasco-chile-txt">—</text>
-        <line x1="42" y1="133" x2="98" y2="133" stroke="#2a2a2a" stroke-width="0.5"/>
-        <text x="70" y="141" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="6" fill="#c9a84c" id="frasco-nombre-txt">Tu nombre</text>
-      </svg>
+      <div class="frasco-img-wrap">
+        <img src="imagenes/frasco-personalizado.png" alt="Jam'i N'i Salsa Personalizada" class="frasco-img">
+        <div class="frasco-nombre-overlay" id="frasco-nombre-overlay">Tu Nombre</div>
+      </div>
       <div class="frasco-nombre" id="frasco-preview-nombre">Tu salsa personalizada</div>
     </div>
     <div class="resumen-card" id="resumen-card"></div>
@@ -280,10 +303,9 @@ function actualizarNombre() {
   actualizarFrasco();
 }
 function actualizarFrasco() {
-  const cn = estado.chiles.map(id=>chiles.find(c=>c.id===id)?.nombre).filter(Boolean).join(' + ');
-  document.getElementById('frasco-chile-txt').textContent = cn || '—';
-  const n = estado.nombre || 'Tu nombre';
-  document.getElementById('frasco-nombre-txt').textContent = n.length>14 ? n.substring(0,14)+'...' : n;
+  var n = estado.nombre || 'Tu Nombre';
+  var overlay = document.getElementById('frasco-nombre-overlay');
+  if (overlay) overlay.textContent = n;
   document.getElementById('frasco-preview-nombre').textContent = estado.nombre || 'Tu salsa personalizada';
 }
 function renderResumen() {
