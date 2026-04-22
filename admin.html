@@ -87,6 +87,8 @@ tr:hover td { background: rgba(201,168,76,0.03); }
 .loading { text-align: center; padding: 40px; color: var(--gris); font-style: italic; }
 .refresh-btn { background: none; border: 1px solid var(--borde); color: var(--gris); padding: 8px 20px; font-family: var(--font-body); font-size: 13px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.3s; }
 .refresh-btn:hover { border-color: var(--oro); color: var(--oro); }
+
+/* STOCK */
 .stock-section { margin-bottom: 36px; }
 .stock-titulo { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); margin-bottom: 14px; display: block; }
 .stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
@@ -95,12 +97,14 @@ tr:hover td { background: rgba(201,168,76,0.03); }
 .stock-input-wrap { display: flex; align-items: center; gap: 8px; }
 .stock-input { background: var(--negro); border: 1px solid var(--borde); color: var(--crema); padding: 8px 10px; font-family: var(--font-body); font-size: 16px; width: 70px; text-align: center; outline: none; }
 .stock-input:focus { border-color: var(--oro); }
-.stock-save-btn { background: var(--oro); border: none; color: var(--negro); padding: 8px 14px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.1em; cursor: pointer; transition: background 0.3s; }
-.stock-save-btn:hover { background: var(--oro-claro); }
+.stock-save-btn { background: var(--oro); border: none; color: var(--negro); padding: 8px 14px; font-family: var(--font-body); font-size: 12px; letter-spacing: 0.1em; cursor: pointer; }
 .stock-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .stock-status { font-size: 11px; color: var(--verde); margin-top: 6px; display: none; }
 .stock-0 { border-color: var(--rojo-vivo); }
 .stock-low { border-color: #e67e22; }
+.etiqueta-btn { background: none; border: 1px solid var(--borde); color: var(--gris-claro); padding: 6px 12px; font-family: var(--font-body); font-size: 12px; cursor: pointer; transition: all 0.3s; width: 100%; margin-top: 6px; }
+.etiqueta-btn:hover { border-color: var(--oro); color: var(--oro); }
+.etiqueta-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -409,13 +413,20 @@ function generarEtiqueta(pedidoId) {
 }
 
 
-var stockData = [];
+var stockItems = [];
+
+function btnEtiqueta(id, estado) {
+  if (estado === "enviado" || estado === "entregado") {
+    return "<button class='etiqueta-btn' disabled>Enviado</button>";
+  }
+  return "<button class='etiqueta-btn' onclick='generarEtiqueta(this, \"" + id + "\")'>Generar etiqueta</button>";
+}
 
 function cargarStock() {
   fetch("/api/obtener-stock")
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      stockData = d.stock || [];
+      stockItems = d.stock || [];
       renderStock();
     })
     .catch(function(e) { console.error("Error cargando stock:", e); });
@@ -424,34 +435,31 @@ function cargarStock() {
 function renderStock() {
   var grid = document.getElementById("stock-grid");
   if (!grid) return;
-  if (stockData.length === 0) {
-    grid.innerHTML = "<div style='color:var(--gris);font-size:13px'>No hay items de stock configurados.</div>";
+  if (stockItems.length === 0) {
+    grid.innerHTML = "<div style='color:var(--gris);font-size:13px'>No hay items configurados.</div>";
     return;
   }
   var html = "";
-  for (var i = 0; i < stockData.length; i++) {
-    var s = stockData[i];
-    var cardClass = "stock-card" + (s.cantidad === 0 ? " stock-0" : s.cantidad <= 3 ? " stock-low" : "");
-    html += "<div class='" + cardClass + "' id='stock-card-" + s.id + "'>";
-    html += "<div class='stock-card-nombre'>" + s.nombre + "</div>";
+  for (var i = 0; i < stockItems.length; i++) {
+    var s = stockItems[i];
+    var cardCls = "stock-card" + (s.cantidad === 0 ? " stock-0" : s.cantidad <= 3 ? " stock-low" : "");
+    html += "<div class='" + cardCls + "' id='scard-" + s.id + "'>";
+    html += "<div class='stock-card-nombre'>" + s.nombre + " <small style='color:var(--gris)'>(" + s.cantidad + ")</small></div>";
     html += "<div class='stock-input-wrap'>";
-    html += "<input type='number' class='stock-input' id='stock-input-" + s.id + "' value='" + s.cantidad + "' min='0' max='999'>";
-    html += "<button class='stock-save-btn' id='stock-btn-" + s.id + "' onclick='guardarStock("" + s.id + "")'>Guardar</button>";
+    html += "<input type='number' class='stock-input' id='sinput-" + s.id + "' value='" + s.cantidad + "' min='0' max='999'>";
+    html += "<button class='stock-save-btn' onclick='guardarStock(\"" + s.id + "\")'>Guardar</button>";
     html += "</div>";
-    html += "<div class='stock-status' id='stock-status-" + s.id + "'>✓ Guardado</div>";
+    html += "<div class='stock-status' id='sstatus-" + s.id + "'>Guardado</div>";
     html += "</div>";
   }
   grid.innerHTML = html;
 }
 
 function guardarStock(id) {
-  var input = document.getElementById("stock-input-" + id);
-  var btn = document.getElementById("stock-btn-" + id);
-  var status = document.getElementById("stock-status-" + id);
+  var input = document.getElementById("sinput-" + id);
+  var status = document.getElementById("sstatus-" + id);
   var cantidad = parseInt(input.value);
   if (isNaN(cantidad) || cantidad < 0) { alert("Cantidad invalida"); return; }
-  btn.disabled = true;
-  btn.textContent = "...";
   fetch("/api/actualizar-stock", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -459,27 +467,69 @@ function guardarStock(id) {
   })
   .then(function(r) { return r.json(); })
   .then(function(d) {
-    btn.disabled = false;
-    btn.textContent = "Guardar";
     if (d.success) {
-      status.style.display = "block";
-      setTimeout(function() { status.style.display = "none"; }, 2000);
-      var card = document.getElementById("stock-card-" + id);
-      if (card) {
-        card.className = "stock-card" + (cantidad === 0 ? " stock-0" : cantidad <= 3 ? " stock-low" : "");
+      if (status) { status.style.display = "block"; setTimeout(function() { status.style.display = "none"; }, 2000); }
+      var card = document.getElementById("scard-" + id);
+      if (card) card.className = "stock-card" + (cantidad === 0 ? " stock-0" : cantidad <= 3 ? " stock-low" : "");
+      for (var i = 0; i < stockItems.length; i++) {
+        if (stockItems[i].id === id) { stockItems[i].cantidad = cantidad; break; }
       }
-      for (var i = 0; i < stockData.length; i++) {
-        if (stockData[i].id === id) { stockData[i].cantidad = cantidad; break; }
-      }
-    } else {
-      alert("Error: " + (d.error || "Error desconocido"));
-    }
+      var nombre = input.parentElement.parentElement.querySelector(".stock-card-nombre");
+      if (nombre) nombre.innerHTML = nombre.innerHTML.replace(/\(\d+\)/, "(" + cantidad + ")");
+    } else { alert("Error: " + (d.error || "desconocido")); }
   })
-  .catch(function() {
-    btn.disabled = false;
-    btn.textContent = "Guardar";
-    alert("Error de conexion.");
-  });
+  .catch(function() { alert("Error de conexion."); });
+}
+
+function generarEtiqueta(btn, pedidoId) {
+  var pedido = null;
+  for (var i = 0; i < pedidos.length; i++) {
+    if (pedidos[i].id === pedidoId) { pedido = pedidos[i]; break; }
+  }
+  if (!pedido) { alert("Pedido no encontrado"); return; }
+  btn.disabled = true;
+  btn.textContent = "Calculando...";
+  var totalFrascos = Array.isArray(pedido.productos) ? pedido.productos.reduce(function(s, p) { return s + (p.cantidad || 1); }, 0) : 1;
+  fetch("/api/calcular-envio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cp_destino: pedido.cp, total_frascos: totalFrascos })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!data.rates || data.rates.length === 0) {
+      alert("Sin opciones de envio para CP " + pedido.cp);
+      btn.disabled = false; btn.textContent = "Generar etiqueta";
+      return;
+    }
+    var rate = data.rates[0];
+    var msg = "Generar etiqueta con:\n" + rate.carrier + " - " + rate.service + "\n$" + rate.precio + " MXN\n\n" + pedido.nombre + "\n" + pedido.calle + ", " + pedido.ciudad + "\n\nConfirmar?";
+    if (!confirm(msg)) { btn.disabled = false; btn.textContent = "Generar etiqueta"; return; }
+    btn.textContent = "Generando...";
+    fetch("/api/generar-etiqueta", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        password: password, pedido_id: pedidoId,
+        rate_id: rate.rate_id, cotizacion_id: rate.cotizacion_id,
+        destinatario: { nombre: pedido.nombre, email: pedido.email, telefono: pedido.telefono, calle: pedido.calle, colonia: pedido.colonia, cp: pedido.cp, ciudad: pedido.ciudad, estado: pedido.estado, referencias: pedido.referencias || "" }
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.success) {
+        btn.textContent = "Enviado"; btn.disabled = true;
+        if (result.label_url) { window.open(result.label_url, "_blank"); }
+        alert("Etiqueta generada!\nTracking: " + (result.tracking_number || "N/A"));
+        cargarPedidos();
+      } else {
+        alert("Error: " + (result.error || "desconocido"));
+        btn.disabled = false; btn.textContent = "Generar etiqueta";
+      }
+    })
+    .catch(function() { btn.disabled = false; btn.textContent = "Generar etiqueta"; alert("Error de conexion."); });
+  })
+  .catch(function() { btn.disabled = false; btn.textContent = "Generar etiqueta"; alert("Error calculando envio."); });
 }
 
 function salir() {
