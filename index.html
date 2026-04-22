@@ -464,7 +464,7 @@ function renderSalsas() {
     for (var j = 0; j < carrito.length; j++) {
       if (carrito[j].id === s.id) { enCarrito = true; break; }
     }
-    var stockQty = (stockData[s.id] !== undefined) ? stockData[s.id] : 999;
+    var stockQty = (s.id === 'personalizada') ? 999 : (stockData[s.id] !== undefined) ? stockData[s.id] : 999;
     var agotada = stockQty === 0;
     var calavs = "";
     for (var k = 0; k < 5; k++) {
